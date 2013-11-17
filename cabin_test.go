@@ -7,7 +7,13 @@ import (
 
 func assert(t *testing.T, value string, want string) {
 	if value != want {
-		t.Errorf("expected %s, returned %s", want, value)
+		t.Errorf("expected %s but was %s", want, value)
+	}
+}
+
+func assertFloor(t *testing.T, c *Cabin, floor int) {
+	if c.currentFloor != floor {
+		t.Errorf("expected floor %d but was %d", floor, c.currentFloor)
 	}
 }
 
@@ -25,6 +31,7 @@ func TestWhenIdleReturnNOTHING(t *testing.T) {
 	c := e.NextCommand()
 
 	assert(t, c, NOTHING)
+	assertFloor(t, e, 0)
 }
 
 func TestBasicCallCurrentFloor(t *testing.T) {
@@ -34,6 +41,7 @@ func TestBasicCallCurrentFloor(t *testing.T) {
 	c := nextCommands(e)
 
 	assert(t, c, OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 0)
 }
 
 func TestBasicCallTooLow(t *testing.T) {
@@ -43,6 +51,7 @@ func TestBasicCallTooLow(t *testing.T) {
 	c := e.NextCommand()
 
 	assert(t, c, NOTHING)
+	assertFloor(t, e, 0)
 }
 
 func TestBasicCallTooHigh(t *testing.T) {
@@ -52,6 +61,7 @@ func TestBasicCallTooHigh(t *testing.T) {
 	c := e.NextCommand()
 
 	assert(t, c, NOTHING)
+	assertFloor(t, e, 0)
 }
 
 func TestBasicCallUp(t *testing.T) {
@@ -61,6 +71,7 @@ func TestBasicCallUp(t *testing.T) {
 	c := nextCommands(e)
 
 	assert(t, c, UP+UP+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 2)
 }
 
 func TestBasicCallDown(t *testing.T) {
@@ -71,6 +82,7 @@ func TestBasicCallDown(t *testing.T) {
 	c := nextCommands(e)
 
 	assert(t, c, DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 0)
 }
 
 func TestBasicCalls(t *testing.T) {
@@ -82,4 +94,17 @@ func TestBasicCalls(t *testing.T) {
 	c := nextCommands(e)
 
 	assert(t, c, UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 1)
+}
+
+func TestReset(t *testing.T) {
+	e := NewCabin()
+	e.Call(2, CALLUP)
+	e.Call(3, CALLDOWN)
+	e.Go(5)
+	e.UserHasEntered()
+
+	e.Reset()
+
+	assertFloor(t, e, 0)
 }
