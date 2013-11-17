@@ -7,7 +7,7 @@ import (
 type Cabin struct {
 	lowerFloor, higherFloor, currentFloor int
 	call                                  int
-	lastCommand                           string
+	opened                                bool
 }
 
 const (
@@ -19,25 +19,25 @@ const (
 )
 
 func (c *Cabin) NextCommand() string {
+	if c.opened {
+		c.opened = false
+		c.call = -1
+		return CLOSE
+	}
 	if c.call >= 0 {
 		if c.call > c.higherFloor {
 			return NOTHING
 		}
 		if c.call == c.currentFloor {
+			c.opened = true
 			return OPEN
 		}
 		if c.call > c.currentFloor {
 			c.currentFloor++
-			if c.call == c.currentFloor {
-				c.call = -1
-			}
 			return UP
 		}
 		if c.call < c.currentFloor {
 			c.currentFloor--
-			if c.call == c.currentFloor {
-				c.call = -1
-			}
 			return DOWN
 		}
 	}

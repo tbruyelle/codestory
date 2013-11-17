@@ -35,7 +35,7 @@ func TestCallCurrentFloor(t *testing.T) {
 	assert(t, c, OPEN+CLOSE+NOTHING)
 }
 
-func TestWhenCallFloorTooLowThenReturnNOTHING(t *testing.T) {
+func TestCallFloorTooLow(t *testing.T) {
 	e := NewCabin()
 	e.Call(-1)
 
@@ -44,7 +44,7 @@ func TestWhenCallFloorTooLowThenReturnNOTHING(t *testing.T) {
 	assert(t, c, NOTHING)
 }
 
-func TestWhenCallFloorTooHighThenReturnNOTHING(t *testing.T) {
+func TestCallFloorTooHigh(t *testing.T) {
 	e := NewCabin()
 	e.Call(21)
 
@@ -53,59 +53,21 @@ func TestWhenCallFloorTooHighThenReturnNOTHING(t *testing.T) {
 	assert(t, c, NOTHING)
 }
 
-func TestWhenCallFloorUpThenReturnUP(t *testing.T) {
+func TestCallFloorUp(t *testing.T) {
 	e := NewCabin()
-	e.Call(1)
+	e.Call(2)
 
-	c := e.NextCommand()
+	c := nextCommands(e, 5)
 
-	assert(t, c, UP)
+	assert(t, c, UP+UP+OPEN+CLOSE+NOTHING)
 }
 
-func TestWhenCallFloorDownThenReturnDOWN(t *testing.T) {
+func TestCallFloorDown(t *testing.T) {
 	e := NewCabin()
 	e.currentFloor = 2
-	e.Call(1)
-
-	c := e.NextCommand()
-
-	assert(t, c, DOWN)
-}
-
-func TestWhenCall1FloorUpThenReturnUPNOTHING(t *testing.T) {
-	e := NewCabin()
-	e.Call(1)
-
-	c := e.NextCommand() + e.NextCommand()
-
-	assert(t, c, UP+NOTHING)
-}
-
-func TestWhenCall1FloorDownThenReturnDOWNNOTHING(t *testing.T) {
-	e := NewCabin()
-	e.currentFloor = 2
-	e.Call(1)
-
-	c := e.NextCommand() + e.NextCommand()
-
-	assert(t, c, DOWN+NOTHING)
-}
-
-func TestWhenCall3FloorUpThenReturnUPUPUPNOTHING(t *testing.T) {
-	e := NewCabin()
-	e.Call(3)
-
-	c := e.NextCommand() + e.NextCommand() + e.NextCommand() + e.NextCommand()
-
-	assert(t, c, UP+UP+UP+NOTHING)
-}
-
-func TestWhenCall3FloorDownThenReturnDOWNDOWNDOWNNOTHING(t *testing.T) {
-	e := NewCabin()
-	e.currentFloor = 3
 	e.Call(0)
 
-	c := e.NextCommand() + e.NextCommand() + e.NextCommand() + e.NextCommand()
+	c := nextCommands(e, 5)
 
-	assert(t, c, DOWN+DOWN+DOWN+NOTHING)
+	assert(t, c, DOWN+DOWN+OPEN+CLOSE+NOTHING)
 }
