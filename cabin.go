@@ -1,9 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
-
 type call struct {
 	atFloor int
 	to      byte
@@ -14,7 +10,6 @@ type Cabin struct {
 	calls                                 []call
 	opened                                bool
 }
-var NOCALL   = call{-1, CALLUP}
 
 const (
 	OPEN     = "OPEN"
@@ -24,6 +19,7 @@ const (
 	NOTHING  = "NOTHING"
 	CALLUP   = 'u'
 	CALLDOWN = 'd'
+	CALLNO   = 'n'
 )
 
 func (c *Cabin) NextCommand() string {
@@ -32,7 +28,10 @@ func (c *Cabin) NextCommand() string {
 		return CLOSE
 	}
 	call := c.nextCall()
-	if call.atFloor >= 0 {
+	if call.to != CALLNO {
+		if call.atFloor < c.lowerFloor {
+			return NOTHING
+		}
 		if call.atFloor > c.higherFloor {
 			return NOTHING
 		}
@@ -53,7 +52,8 @@ func (c *Cabin) NextCommand() string {
 	return NOTHING
 }
 
-func (c *Cabin) Reset() {
+func (c *Cabin) Reset(lowerFloor, higherFloor int) {
+	initCabin(c, lowerFloor, higherFloor)
 }
 
 func (c *Cabin) Call(atFloor int, to byte) {
@@ -61,29 +61,30 @@ func (c *Cabin) Call(atFloor int, to byte) {
 }
 
 func (c *Cabin) Go(floorToGo int) {
-	fmt.Println("go", floorToGo)
 }
 
 func (c *Cabin) UserHasEntered() {
-	fmt.Println("UserHasEntered")
 }
 
 func (c *Cabin) UserHasExited() {
-	fmt.Println("UserHasExited")
 }
 
-func NewCabin() *Cabin {
+func NewCabin(lowerFloor, higherFloor int) *Cabin {
 	c := new(Cabin)
-	c.lowerFloor = 0
-	c.currentFloor = 0
-	c.higherFloor = 20
-	c.calls = make([]call, 0, c.higherFloor)
+	initCabin(c, lowerFloor, higherFloor)
 	return c
+}
+
+func initCabin(c *Cabin, lowerFloor, higherFloor int) {
+	c.lowerFloor = lowerFloor
+	c.currentFloor = 0
+	c.higherFloor = higherFloor
+	c.calls = make([]call, 0, c.higherFloor)
 }
 
 func (c *Cabin) nextCall() call {
 	if len(c.calls) == 0 {
-		return NOCALL
+		return call{to: CALLNO}
 	}
 	return c.calls[0]
 }

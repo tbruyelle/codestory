@@ -8,7 +8,7 @@ import (
 
 type Elevator interface {
 	NextCommand() string
-	Reset()
+	Reset(lowerFloor, higherFloor int)
 	Call(atFloor int, to byte)
 	Go(floorToGo int)
 	UserHasEntered()
@@ -42,7 +42,17 @@ func nextCommandHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func resetHandler(w http.ResponseWriter, r *http.Request) {
-	elevator.Reset()
+	l, err := strconv.Atoi(r.FormValue("lowerFloor"))
+	if err != nil {
+		fmt.Println(err)
+		l = 0
+	}
+	h, err := strconv.Atoi(r.FormValue("higherFloor"))
+	if err != nil {
+		fmt.Println(err)
+		h = 5
+	}
+	elevator.Reset(l, h)
 }
 
 func callHandler(w http.ResponseWriter, r *http.Request) {

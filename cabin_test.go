@@ -5,6 +5,10 @@ import (
 	"testing"
 )
 
+func newElevator() *Cabin {
+	return NewCabin(0, 5)
+}
+
 func assert(t *testing.T, value string, want string) {
 	if value != want {
 		t.Errorf("expected %s but was %s", want, value)
@@ -26,7 +30,7 @@ func nextCommands(e Elevator) string {
 }
 
 func TestWhenIdleReturnNOTHING(t *testing.T) {
-	e := NewCabin()
+	e := newElevator()
 
 	c := e.NextCommand()
 
@@ -35,7 +39,7 @@ func TestWhenIdleReturnNOTHING(t *testing.T) {
 }
 
 func TestBasicCallCurrentFloor(t *testing.T) {
-	e := NewCabin()
+	e := newElevator()
 	e.Call(0, CALLUP)
 
 	c := nextCommands(e)
@@ -45,7 +49,7 @@ func TestBasicCallCurrentFloor(t *testing.T) {
 }
 
 func TestBasicCallTooLow(t *testing.T) {
-	e := NewCabin()
+	e := newElevator()
 	e.Call(-1, CALLUP)
 
 	c := e.NextCommand()
@@ -55,7 +59,7 @@ func TestBasicCallTooLow(t *testing.T) {
 }
 
 func TestBasicCallTooHigh(t *testing.T) {
-	e := NewCabin()
+	e := newElevator()
 	e.Call(21, CALLUP)
 
 	c := e.NextCommand()
@@ -65,7 +69,7 @@ func TestBasicCallTooHigh(t *testing.T) {
 }
 
 func TestBasicCallUp(t *testing.T) {
-	e := NewCabin()
+	e := newElevator()
 	e.Call(2, CALLUP)
 
 	c := nextCommands(e)
@@ -75,18 +79,18 @@ func TestBasicCallUp(t *testing.T) {
 }
 
 func TestBasicCallDown(t *testing.T) {
-	e := NewCabin()
-	e.currentFloor = 2
-	e.Call(0, CALLUP)
+	e := newElevator()
+	e.currentFloor = 3
+	e.Call(1, CALLUP)
 
 	c := nextCommands(e)
 
 	assert(t, c, DOWN+DOWN+OPEN+CLOSE+NOTHING)
-	assertFloor(t, e, 0)
+	assertFloor(t, e, 1)
 }
 
 func TestBasicCalls(t *testing.T) {
-	e := NewCabin()
+	e := newElevator()
 	e.Call(2, CALLUP)
 	e.Call(3, CALLUP)
 	e.Call(1, CALLUP)
@@ -98,13 +102,19 @@ func TestBasicCalls(t *testing.T) {
 }
 
 func TestReset(t *testing.T) {
-	e := NewCabin()
+	e := newElevator()
 	e.Call(2, CALLUP)
 	e.Call(3, CALLDOWN)
 	e.Go(5)
 	e.UserHasEntered()
+	nextCommands(e)
 
-	e.Reset()
+	e.Reset(0, 5)
 
 	assertFloor(t, e, 0)
+	if e.lowerFloor != 0 {
+		t.Errorf("bad lower floor")
+	}
+	if e.higherFloor!=5 {
+		t.Errorf("bad higher floor")}
 }
