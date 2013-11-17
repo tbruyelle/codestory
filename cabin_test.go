@@ -109,12 +109,13 @@ func TestReset(t *testing.T) {
 	e.UserHasEntered()
 	nextCommands(e)
 
-	e.Reset(0, 5)
+	e.Reset(-1, 50)
 
 	assertFloor(t, e, 0)
-	if e.lowerFloor != 0 {
+	if e.lowerFloor != -1 {
 		t.Errorf("bad lower floor")
 	}
-	if e.higherFloor!=5 {
-		t.Errorf("bad higher floor")}
+	if e.higherFloor != 50 {
+		t.Errorf("bad higher floor")
+	}
 }
