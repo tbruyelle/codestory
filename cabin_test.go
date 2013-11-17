@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -10,9 +11,9 @@ func assert(t *testing.T, value string, want string) {
 	}
 }
 
-func nextCommands(e Elevator, time int) string {
+func nextCommands(e Elevator) string {
 	var s string
-	for i := 0; i < time; i++ {
+	for !strings.Contains(s, NOTHING) {
 		s += e.NextCommand()
 	}
 	return s
@@ -26,48 +27,59 @@ func TestWhenIdleReturnNOTHING(t *testing.T) {
 	assert(t, c, NOTHING)
 }
 
-func TestCallCurrentFloor(t *testing.T) {
+func TestBasicCallCurrentFloor(t *testing.T) {
 	e := NewCabin()
-	e.Call(0)
+	e.Call(0, CALLUP)
 
-	c := nextCommands(e, 3)
+	c := nextCommands(e)
 
 	assert(t, c, OPEN+CLOSE+NOTHING)
 }
 
-func TestCallFloorTooLow(t *testing.T) {
+func TestBasicCallTooLow(t *testing.T) {
 	e := NewCabin()
-	e.Call(-1)
+	e.Call(-1, CALLUP)
 
 	c := e.NextCommand()
 
 	assert(t, c, NOTHING)
 }
 
-func TestCallFloorTooHigh(t *testing.T) {
+func TestBasicCallTooHigh(t *testing.T) {
 	e := NewCabin()
-	e.Call(21)
+	e.Call(21, CALLUP)
 
 	c := e.NextCommand()
 
 	assert(t, c, NOTHING)
 }
 
-func TestCallFloorUp(t *testing.T) {
+func TestBasicCallUp(t *testing.T) {
 	e := NewCabin()
-	e.Call(2)
+	e.Call(2, CALLUP)
 
-	c := nextCommands(e, 5)
+	c := nextCommands(e)
 
 	assert(t, c, UP+UP+OPEN+CLOSE+NOTHING)
 }
 
-func TestCallFloorDown(t *testing.T) {
+func TestBasicCallDown(t *testing.T) {
 	e := NewCabin()
 	e.currentFloor = 2
-	e.Call(0)
+	e.Call(0, CALLUP)
 
-	c := nextCommands(e, 5)
+	c := nextCommands(e)
 
 	assert(t, c, DOWN+DOWN+OPEN+CLOSE+NOTHING)
+}
+
+func TestBasicCalls(t *testing.T) {
+	e := NewCabin()
+	e.Call(2, CALLUP)
+	e.Call(3, CALLUP)
+	e.Call(1, CALLUP)
+
+	c := nextCommands(e)
+
+	assert(t, c, UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+DOWN+DOWN+OPEN+CLOSE+NOTHING)
 }

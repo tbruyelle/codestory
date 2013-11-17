@@ -9,7 +9,7 @@ import (
 type Elevator interface {
 	NextCommand() string
 	Reset()
-	Call(atFloor int)
+	Call(atFloor int, to byte)
 	Go(floorToGo int)
 	UserHasEntered()
 	UserHasExited()
@@ -21,12 +21,12 @@ func main() {
 	elevator = NewOmnibus()
 
 	http.HandleFunc("/", defaultHandler)
-	http.HandleFunc("/nextCommand", nextCommand)
-	http.HandleFunc("/reset", reset)
-	http.HandleFunc("/call", call)
+	http.HandleFunc("/nextCommand", nextCommandHandler)
+	http.HandleFunc("/reset", resetHandler)
+	http.HandleFunc("/call", callHandler)
 	http.HandleFunc("/go", goHandler)
-	http.HandleFunc("/userHasEntered", userHasEntered)
-	http.HandleFunc("/userHasExited", userHasExited)
+	http.HandleFunc("/userHasEntered", userHasEnteredHandler)
+	http.HandleFunc("/userHasExited", userHasExitedHandler)
 	err := http.ListenAndServe(":8081", nil)
 	if err != nil {
 		fmt.Println(err)
@@ -37,21 +37,28 @@ func main() {
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
 }
 
-func nextCommand(w http.ResponseWriter, r *http.Request) {
+func nextCommandHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, elevator.NextCommand())
 }
 
-func reset(w http.ResponseWriter, r *http.Request) {
+func resetHandler(w http.ResponseWriter, r *http.Request) {
 	elevator.Reset()
 }
 
-func call(w http.ResponseWriter, r *http.Request) {
+func callHandler(w http.ResponseWriter, r *http.Request) {
 	atFloor, err := strconv.Atoi(r.FormValue("atFloor"))
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	elevator.Call(atFloor)
+	direction := r.FormValue("to")
+	var to byte
+	if direction == "UP" {
+		to = CALLUP
+	} else {
+		to = CALLDOWN
+	}
+	elevator.Call(atFloor, to)
 }
 
 func goHandler(w http.ResponseWriter, r *http.Request) {
@@ -63,10 +70,10 @@ func goHandler(w http.ResponseWriter, r *http.Request) {
 	elevator.Go(floorToGo)
 }
 
-func userHasEntered(w http.ResponseWriter, r *http.Request) {
+func userHasEnteredHandler(w http.ResponseWriter, r *http.Request) {
 	elevator.UserHasEntered()
 }
 
-func userHasExited(w http.ResponseWriter, r *http.Request) {
+func userHasExitedHandler(w http.ResponseWriter, r *http.Request) {
 	elevator.UserHasExited()
 }
