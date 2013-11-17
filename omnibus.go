@@ -1,5 +1,9 @@
 package main
 
+import (
+	"fmt"
+)
+
 type Omnibus struct {
 	counter int
 }
@@ -24,7 +28,24 @@ func (o *Omnibus) NextCommand() string {
 }
 
 func (o *Omnibus) Reset() {
-o.counter=0}
+	o.counter = 0
+}
+
+func (o *Omnibus) Call(atFloor int) {
+	fmt.Println("call", atFloor)
+}
+
+func (o *Omnibus) Go(floorToGo int) {
+	fmt.Println("go", floorToGo)
+}
+
+func (o *Omnibus) UserHasEntered() {
+	fmt.Println("UserHasEntered")
+}
+
+func (o *Omnibus) UserHasExited() {
+	fmt.Println("UserHasExited")
+}
 
 func NewOmnibus() *Omnibus {
 	return new(Omnibus)
