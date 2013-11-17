@@ -119,3 +119,15 @@ func TestReset(t *testing.T) {
 		t.Errorf("bad higher floor")
 	}
 }
+
+func TestNegativeFloors(t *testing.T) {
+	e := newElevator()
+	e.lowerFloor = -3
+	e.Call(2, CALLDOWN)
+	e.Call(-3, CALLUP)
+
+	c := nextCommands(e)
+
+	assert(t, c, UP+UP+OPEN+CLOSE+DOWN+DOWN+DOWN+DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, -3)
+}
