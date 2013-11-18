@@ -18,7 +18,7 @@ type Elevator interface {
 var elevator Elevator
 
 func main() {
-	elevator = NewOmnibus()
+	elevator = NewCabin(0, 5)
 
 	http.HandleFunc("/", defaultHandler)
 	http.HandleFunc("/nextCommand", nextCommandHandler)
@@ -27,7 +27,7 @@ func main() {
 	http.HandleFunc("/go", goHandler)
 	http.HandleFunc("/userHasEntered", userHasEnteredHandler)
 	http.HandleFunc("/userHasExited", userHasExitedHandler)
-	err := http.ListenAndServe(":8081", nil)
+	err := http.ListenAndServe(":8181", nil)
 	if err != nil {
 		fmt.Println(err)
 		return
