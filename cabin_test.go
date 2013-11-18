@@ -17,6 +17,12 @@ func assert(t *testing.T, value string, want string) {
 	}
 }
 
+func assertDoorClosed(t *testing.T, e *Cabin) {
+	if e.opened {
+		t.Error("exected door closed but was opened")
+	}
+}
+
 func assertNoMoreGo(t *testing.T, e *Cabin) {
 	if len(e.gos) > 0 {
 		t.Errorf("expected no more GO but still %d", len(e.gos))
@@ -51,6 +57,7 @@ func TestIdle(t *testing.T) {
 	assert(t, c, NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 0)
+	assertDoorClosed(t, e)
 }
 
 func TestReset(t *testing.T) {
@@ -60,6 +67,7 @@ func TestReset(t *testing.T) {
 	e.Go(5)
 	e.UserHasEntered()
 	nextCommands(e)
+	e.opened = true
 
 	e.Reset(-1, 50)
 
@@ -72,4 +80,5 @@ func TestReset(t *testing.T) {
 	}
 	assertNoMoreCall(t, e)
 	assertNoMoreGo(t, e)
+	assertDoorClosed(t, e)
 }

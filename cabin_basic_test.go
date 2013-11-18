@@ -13,6 +13,7 @@ func TestBasicGoCurrentFloor(t *testing.T) {
 	assert(t, c, OPEN+CLOSE+NOTHING)
 	assertNoMoreGo(t, e)
 	assertFloor(t, e, 0)
+	assertDoorClosed(t, e)
 }
 
 func TestBasicGoUp(t *testing.T) {
@@ -24,6 +25,7 @@ func TestBasicGoUp(t *testing.T) {
 	assert(t, c, UP+UP+OPEN+CLOSE+NOTHING)
 	assertNoMoreGo(t, e)
 	assertFloor(t, e, 2)
+	assertDoorClosed(t, e)
 }
 
 func TestBasicGoDown(t *testing.T) {
@@ -36,6 +38,7 @@ func TestBasicGoDown(t *testing.T) {
 	assert(t, c, DOWN+DOWN+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, 0)
 	assertNoMoreGo(t, e)
+	assertDoorClosed(t, e)
 }
 
 func TestGoTooLow(t *testing.T) {
@@ -47,6 +50,7 @@ func TestGoTooLow(t *testing.T) {
 	assert(t, c, NOTHING)
 	assertFloor(t, e, 0)
 	assertNoMoreGo(t, e)
+	assertDoorClosed(t, e)
 }
 func TestGoTooHigh(t *testing.T) {
 	setup()
@@ -57,6 +61,7 @@ func TestGoTooHigh(t *testing.T) {
 	assert(t, c, NOTHING)
 	assertFloor(t, e, 0)
 	assertNoMoreGo(t, e)
+	assertDoorClosed(t, e)
 }
 
 func TestBasicCallCurrentFloor(t *testing.T) {
@@ -68,6 +73,7 @@ func TestBasicCallCurrentFloor(t *testing.T) {
 	assert(t, c, OPEN+CLOSE+NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 0)
+	assertDoorClosed(t, e)
 }
 
 func TestBasicCallTooLow(t *testing.T) {
@@ -79,6 +85,7 @@ func TestBasicCallTooLow(t *testing.T) {
 	assert(t, c, NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 0)
+	assertDoorClosed(t, e)
 }
 
 func TestBasicCallTooHigh(t *testing.T) {
@@ -90,6 +97,7 @@ func TestBasicCallTooHigh(t *testing.T) {
 	assert(t, c, NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 0)
+	assertDoorClosed(t, e)
 }
 
 func TestBasicCallUp(t *testing.T) {
@@ -101,6 +109,7 @@ func TestBasicCallUp(t *testing.T) {
 	assert(t, c, UP+UP+OPEN+CLOSE+NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 2)
+	assertDoorClosed(t, e)
 }
 
 func TestBasicCallDown(t *testing.T) {
@@ -113,6 +122,7 @@ func TestBasicCallDown(t *testing.T) {
 	assert(t, c, DOWN+DOWN+OPEN+CLOSE+NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 1)
+	assertDoorClosed(t, e)
 }
 
 func TestBasicCalls(t *testing.T) {
@@ -126,6 +136,7 @@ func TestBasicCalls(t *testing.T) {
 	assert(t, c, UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+DOWN+DOWN+OPEN+CLOSE+NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 1)
+	assertDoorClosed(t, e)
 }
 
 func TestBasicGos(t *testing.T) {
@@ -139,6 +150,7 @@ func TestBasicGos(t *testing.T) {
 	assert(t, c, UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+DOWN+DOWN+OPEN+CLOSE+NOTHING)
 	assertNoMoreGo(t, e)
 	assertFloor(t, e, 1)
+	assertDoorClosed(t, e)
 }
 
 func TestCallNegativeFloors(t *testing.T) {
@@ -152,6 +164,7 @@ func TestCallNegativeFloors(t *testing.T) {
 	assert(t, c, UP+UP+OPEN+CLOSE+DOWN+DOWN+DOWN+DOWN+DOWN+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, -3)
 	assertNoMoreCall(t, e)
+	assertDoorClosed(t, e)
 }
 
 func TestGoNegativeFloors(t *testing.T) {
@@ -165,4 +178,5 @@ func TestGoNegativeFloors(t *testing.T) {
 	assert(t, c, UP+UP+OPEN+CLOSE+DOWN+DOWN+DOWN+DOWN+DOWN+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, -3)
 	assertNoMoreGo(t, e)
+	assertDoorClosed(t, e)
 }

@@ -87,6 +87,7 @@ func initCabin(c *Cabin, lowerFloor, higherFloor int) {
 	c.higherFloor = higherFloor
 	c.calls = make([]call, 0, c.higherFloor-c.lowerFloor)
 	c.gos = make([]int, 0, c.higherFloor-c.lowerFloor)
+	c.opened = false
 }
 
 func (c *Cabin) nextCall() *call {
