@@ -20,7 +20,6 @@ const (
 	NOTHING  = "NOTHING"
 	CALLUP   = 'u'
 	CALLDOWN = 'd'
-	CALLNO   = 'n'
 )
 
 func (c *Cabin) NextCommand() string {
@@ -28,29 +27,30 @@ func (c *Cabin) NextCommand() string {
 		c.opened = false
 		return CLOSE
 	}
-	if len(c.gos) > 0 {
-		floor := c.nextGo()
-		if floor < c.lowerFloor || floor > c.higherFloor {
+
+	floor := c.nextGo()
+	if floor != nil {
+		if *floor < c.lowerFloor || *floor > c.higherFloor {
 			c.goProcessed()
 			return NOTHING
 		}
-		if floor == c.currentFloor {
+		if *floor == c.currentFloor {
 			c.opened = true
 			c.goProcessed()
 			return OPEN
 		}
-		if floor > c.currentFloor {
+		if *floor > c.currentFloor {
 			c.currentFloor++
 			return UP
 		}
-		if floor < c.currentFloor {
+		if *floor < c.currentFloor {
 			c.currentFloor--
 			return DOWN
 		}
 	}
 	call := c.nextCall()
-	if call.to != CALLNO {
-		if call.atFloor < c.lowerFloor ||call.atFloor > c.higherFloor {
+	if call !=nil{
+		if call.atFloor < c.lowerFloor || call.atFloor > c.higherFloor {
 			c.callProcessed()
 			return NOTHING
 		}
@@ -103,19 +103,22 @@ func initCabin(c *Cabin, lowerFloor, higherFloor int) {
 	c.gos = make([]int, 0, c.higherFloor-c.lowerFloor)
 }
 
-func (c *Cabin) nextCall() call {
+func (c *Cabin) nextCall() *call {
 	if len(c.calls) == 0 {
-		return call{to: CALLNO}
+		return nil
 	}
-	return c.calls[0]
+	return &c.calls[0]
 }
 
 func (c *Cabin) callProcessed() {
 	c.calls = c.calls[1:]
 }
 
-func (c *Cabin) nextGo() int {
-	return c.gos[0]
+func (c *Cabin) nextGo() *int {
+	if len(c.gos) == 0 {
+		return nil
+	}
+	return &c.gos[0]
 }
 
 func (c *Cabin) goProcessed() {
