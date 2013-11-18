@@ -22,51 +22,37 @@ const (
 	CALLDOWN = 'd'
 )
 
+func processCommand(c *Cabin, floor int, processed func()) string {
+	if floor < c.lowerFloor || floor > c.higherFloor {
+		processed()
+		return NOTHING
+	}
+	if floor > c.currentFloor {
+		c.currentFloor++
+		return UP
+	}
+	if floor < c.currentFloor {
+		c.currentFloor--
+		return DOWN
+	}
+	// floor == c.currentFloor
+	c.opened = true
+	processed()
+	return OPEN
+}
+
 func (c *Cabin) NextCommand() string {
 	if c.opened {
 		c.opened = false
 		return CLOSE
 	}
-
 	floor := c.nextGo()
 	if floor != nil {
-		if *floor < c.lowerFloor || *floor > c.higherFloor {
-			c.goProcessed()
-			return NOTHING
-		}
-		if *floor == c.currentFloor {
-			c.opened = true
-			c.goProcessed()
-			return OPEN
-		}
-		if *floor > c.currentFloor {
-			c.currentFloor++
-			return UP
-		}
-		if *floor < c.currentFloor {
-			c.currentFloor--
-			return DOWN
-		}
+		return processCommand(c, *floor, c.goProcessed)
 	}
 	call := c.nextCall()
-	if call !=nil{
-		if call.atFloor < c.lowerFloor || call.atFloor > c.higherFloor {
-			c.callProcessed()
-			return NOTHING
-		}
-		if call.atFloor == c.currentFloor {
-			c.opened = true
-			c.callProcessed()
-			return OPEN
-		}
-		if call.atFloor > c.currentFloor {
-			c.currentFloor++
-			return UP
-		}
-		if call.atFloor < c.currentFloor {
-			c.currentFloor--
-			return DOWN
-		}
+	if call != nil {
+		return processCommand(c, call.atFloor, c.callProcessed)
 	}
 	return NOTHING
 }
