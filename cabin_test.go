@@ -94,7 +94,7 @@ func nextCommands(e Elevator) string {
 	return s
 }
 
-func TestWhenIdleReturnNOTHING(t *testing.T) {
+func TestIdle(t *testing.T) {
 	e := newElevator()
 
 	c := e.NextCommand()
@@ -173,6 +173,19 @@ func TestBasicCalls(t *testing.T) {
 	assertFloor(t, e, 1)
 }
 
+func TestBasicGos(t *testing.T) {
+	e := newElevator()
+	e.Go(2)
+	e.Go(3)
+	e.Go(1)
+
+	c := nextCommands(e)
+
+	assert(t, c, UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assertNoMoreGo(t, e)
+	assertFloor(t, e, 1)
+}
+
 func TestReset(t *testing.T) {
 	e := newElevator()
 	e.Call(2, CALLUP)
@@ -205,4 +218,17 @@ func TestCallNegativeFloors(t *testing.T) {
 	assert(t, c, UP+UP+OPEN+CLOSE+DOWN+DOWN+DOWN+DOWN+DOWN+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, -3)
 	assertNoMoreCall(t, e)
+}
+
+func TestGoNegativeFloors(t *testing.T) {
+	e := newElevator()
+	e.lowerFloor = -3
+	e.Go(2)
+	e.Go(-3)
+
+	c := nextCommands(e)
+
+	assert(t, c, UP+UP+OPEN+CLOSE+DOWN+DOWN+DOWN+DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, -3)
+	assertNoMoreGo(t, e)
 }
