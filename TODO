@@ -1,0 +1,4 @@
+- mettre la direction aussi dans les go
+- choisir le go le plus proche
+- choisir le call le plus proche
+- mixer call et go pour trouver le plus proche

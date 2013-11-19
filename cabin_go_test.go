@@ -66,13 +66,15 @@ func TestGoTooHigh(t *testing.T) {
 
 func TestGos(t *testing.T) {
 	setup()
+
 	e.Go(2)
-	e.Go(3)
-	e.Go(1)
-
 	c := nextCommands(e)
+	e.Go(3)
+	c += nextCommands(e)
+	e.Go(1)
+	c += nextCommands(e)
 
-	assert(t, c, UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assert(t, c, UP+UP+OPEN+CLOSE+NOTHING+UP+OPEN+CLOSE+NOTHING+DOWN+DOWN+OPEN+CLOSE+NOTHING)
 	assertNoMoreGo(t, e)
 	assertFloor(t, e, 1)
 	assertDoorClosed(t, e)
@@ -81,13 +83,41 @@ func TestGos(t *testing.T) {
 func TestGoNegativeFloors(t *testing.T) {
 	setup()
 	e.lowerFloor = -3
+
 	e.Go(2)
+	c := nextCommands(e)
 	e.Go(-3)
+	c += nextCommands(e)
+
+	assert(t, c, UP+UP+OPEN+CLOSE+NOTHING+DOWN+DOWN+DOWN+DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, -3)
+	assertNoMoreGo(t, e)
+	assertDoorClosed(t, e)
+}
+
+func TestGosUpChooseNearest(t *testing.T) {
+	setup()
+	e.Go(4)
+	e.Go(2)
 
 	c := nextCommands(e)
 
-	assert(t, c, UP+UP+OPEN+CLOSE+DOWN+DOWN+DOWN+DOWN+DOWN+OPEN+CLOSE+NOTHING)
-	assertFloor(t, e, -3)
+	assert(t, c, UP+UP+OPEN+CLOSE+UP+UP+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 4)
+	assertDoorClosed(t, e)
+	assertNoMoreGo(t, e)
+}
+
+func TestGosDownChooseNearest(t *testing.T) {
+	setup()
+	e.currentFloor = 5
+	e.Go(1)
+	e.Go(3)
+
+	c := nextCommands(e)
+
+	assert(t, c, DOWN+OPEN+CLOSE+DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 1)
 	assertNoMoreGo(t, e)
 	assertDoorClosed(t, e)
 }
