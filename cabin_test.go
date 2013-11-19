@@ -8,7 +8,7 @@ import (
 var e *Cabin
 
 func setup() {
-	e = NewCabin(0, 5)
+	e = NewCabin(0, 5, false)
 }
 
 func assert(t *testing.T, value string, want string) {
@@ -24,14 +24,22 @@ func assertDoorClosed(t *testing.T, e *Cabin) {
 }
 
 func assertNoMoreGo(t *testing.T, e *Cabin) {
-	if len(e.gos) > 0 {
-		t.Errorf("expected no more GO but still %d", len(e.gos))
+	assertNbGo(t, e, 0)
+}
+
+func assertNbGo(t *testing.T, e *Cabin, nbGos int) {
+	if len(e.gos) != nbGos{
+		t.Errorf("expected %d GO but was %d", nbGos, len(e.gos))
 	}
 }
 
 func assertNoMoreCall(t *testing.T, e *Cabin) {
-	if len(e.calls) > 0 {
-		t.Errorf("expected no more CALL but still %d", len(e.calls))
+	assertNbCall(t, e, 0)
+}
+
+func assertNbCall(t *testing.T, e *Cabin, nbCalls int) {
+	if len(e.calls) != nbCalls {
+		t.Errorf("expected %d CALL but was %d", nbCalls, len(e.calls))
 	}
 }
 

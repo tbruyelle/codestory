@@ -4,6 +4,15 @@ import (
 	"testing"
 )
 
+func TestCallsSameFloor(t *testing.T) {
+	setup()
+
+	e.Call(1, CALLUP)
+	e.Call(1, CALLUP)
+
+	assertNbCall(t, e, 1)
+}
+
 func TestCallCurrentFloor(t *testing.T) {
 	setup()
 	e.Call(0, CALLUP)

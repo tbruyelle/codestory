@@ -18,7 +18,7 @@ type Elevator interface {
 var elevator Elevator
 
 func main() {
-	elevator = NewCabin(0, 5)
+	elevator = NewCabin(0, 5, true)
 
 	http.HandleFunc("/", defaultHandler)
 	http.HandleFunc("/nextCommand", nextCommandHandler)

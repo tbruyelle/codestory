@@ -1,5 +1,9 @@
 package main
 
+import (
+	"fmt"
+)
+
 type call struct {
 	atFloor int
 	to      byte
@@ -22,6 +26,8 @@ const (
 	CALLDOWN = 'd'
 )
 
+var debug = false
+
 func processCommand(c *Cabin, floor int, processed func()) string {
 	if floor < c.lowerFloor || floor > c.higherFloor {
 		processed()
@@ -41,7 +47,16 @@ func processCommand(c *Cabin, floor int, processed func()) string {
 	return OPEN
 }
 
+func (c *Cabin) trace(msg string) {
+	if debug {
+		fmt.Printf("%s: current=%d\ncalls=%+v\ngos=%+v\n\n", msg, c.currentFloor, c.calls, c.gos)
+	}
+}
+
 func (c *Cabin) NextCommand() string {
+	c.trace("Start NEXT")
+	defer c.trace("End NEXT")
+
 	if c.opened {
 		c.opened = false
 		return CLOSE
@@ -62,10 +77,22 @@ func (c *Cabin) Reset(lowerFloor, higherFloor int) {
 }
 
 func (c *Cabin) Call(atFloor int, to byte) {
+	for i := 0; i < len(c.calls); i++ {
+		if atFloor == c.calls[i].atFloor {
+			// ignore already registerd call
+			return
+		}
+	}
 	c.calls = append(c.calls, call{atFloor, to})
 }
 
 func (c *Cabin) Go(floorToGo int) {
+	for i := 0; i < len(c.gos); i++ {
+		if floorToGo == c.gos[i] {
+			// ignore alread registered go
+			return
+		}
+	}
 	c.gos = append(c.gos, floorToGo)
 }
 
@@ -75,9 +102,10 @@ func (c *Cabin) UserHasEntered() {
 func (c *Cabin) UserHasExited() {
 }
 
-func NewCabin(lowerFloor, higherFloor int) *Cabin {
+func NewCabin(lowerFloor, higherFloor int, d bool) *Cabin {
 	c := new(Cabin)
 	initCabin(c, lowerFloor, higherFloor)
+	debug = d
 	return c
 }
 
@@ -88,6 +116,7 @@ func initCabin(c *Cabin, lowerFloor, higherFloor int) {
 	c.calls = make([]call, 0, c.higherFloor-c.lowerFloor)
 	c.gos = make([]int, 0, c.higherFloor-c.lowerFloor)
 	c.opened = false
+	c.trace("init")
 }
 
 func (c *Cabin) nextCall() *call {
