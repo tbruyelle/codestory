@@ -51,10 +51,13 @@ func assertFloor(t *testing.T, c *Cabin, floor int) {
 
 func nextCommands(e Elevator) string {
 	var s string
-	max := 100
-	for !strings.Contains(s, NOTHING) && max >0 {
-		s += e.NextCommand()
-		max--
+	for i := 0; i < 100; i++ {
+		c := e.NextCommand()
+		if c == NOTHING && strings.HasSuffix(s, NOTHING) {
+			// ends where there is 2 following NOTHINGs
+			break
+		}
+		s += c
 	}
 	return s
 }
@@ -67,6 +70,16 @@ func TestIdle(t *testing.T) {
 	assert(t, c, NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 0)
+	assertDoorClosed(t, e)
+}
+
+func TestOpenedDoor(t *testing.T) {
+	setup()
+	e.opened = true
+
+	c := nextCommands(e)
+
+	assert(t, c, CLOSE+NOTHING)
 	assertDoorClosed(t, e)
 }
 

@@ -58,9 +58,10 @@ func (c *Cabin) floorProcessed(floor int) {
 }
 
 func (c *Cabin) processCmdCurrentFloor() string {
-c.opened=true
-c.floorProcessed(c.currentFloor)
-return OPEN}
+	c.opened = true
+	c.floorProcessed(c.currentFloor)
+	return OPEN
+}
 
 func (c *Cabin) hasCmdCurrentFloor() bool {
 	return hasFloor(c.gos, c.currentFloor) || hasFloor(c.calls, c.currentFloor)
@@ -98,15 +99,21 @@ func (c *Cabin) deleteCall(floor int) {
 
 func (c *Cabin) trace(msg string) {
 	if debug {
-		fmt.Printf("%s:(%d/%d) current=%d\ncalls=%+v\ngos=%+v\n\n", msg, c.lowerFloor, c.higherFloor, c.currentFloor, c.calls, c.gos)
+		fmt.Printf("%s:(%d/%d) opened=%t current=%d\nCALLS===%+v\nGOS===%+v\n\n", msg, c.lowerFloor, c.higherFloor, c.opened, c.currentFloor, c.calls, c.gos)
 	}
 }
 
 func (c *Cabin) NextCommand() (ret string) {
 	c.trace("Start NEXT")
-	defer func() { c.trace("End NEXT " + ret) }()
+	defer func() { c.trace("RETURN " + ret) }()
 
 	if c.opened {
+		// before close check is theres a command for currentFloor
+		if c.hasCmdCurrentFloor() {
+			// command for current floor, keep the door opened
+			c.floorProcessed(c.currentFloor)
+			return NOTHING
+		}
 		c.opened = false
 		return CLOSE
 	}

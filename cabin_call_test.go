@@ -4,6 +4,16 @@ import (
 	"testing"
 )
 
+func TestCallCurrentFloorOpenedDoor(t *testing.T) {
+	setup()
+	e.opened = true
+	e.Call(0, UP)
+
+	c := nextCommands(e)
+
+	assert(t, c, NOTHING+CLOSE+NOTHING)
+}
+
 func TestCallSameDirectionUp(t *testing.T) {
 	setup()
 	e.Call(2, DOWN)
