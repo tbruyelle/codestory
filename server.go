@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -18,7 +19,13 @@ type Elevator interface {
 var elevator Elevator
 
 func main() {
-	elevator = NewCabin(0, 5, true)
+	debug := false
+	if len(os.Args) >= 2 {
+		debug = os.Args[1] == "-d"
+		if debug{
+		fmt.Println("Debug enabled")}
+	}
+	elevator = NewCabin(0, 5, debug)
 
 	http.HandleFunc("/", defaultHandler)
 	http.HandleFunc("/nextCommand", nextCommandHandler)
