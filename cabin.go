@@ -25,8 +25,6 @@ const (
 	NOTHING  = "NOTHING"
 	CMD_CALL = 'c'
 	CMD_GO   = 'g'
-	CALLUP   = 'u'
-	CALLDOWN = 'd'
 )
 
 var debug = false
@@ -83,7 +81,7 @@ func (c *Cabin) Reset(lowerFloor, higherFloor int) {
 	initCabin(c, lowerFloor, higherFloor)
 }
 
-func (c *Cabin) Call(floor int, dir byte) {
+func (c *Cabin) Call(floor int, dir string) {
 	if call, ok := c.calls[floor]; ok {
 		call.up = true
 		call.down = true
@@ -91,8 +89,8 @@ func (c *Cabin) Call(floor int, dir byte) {
 		c.calls[floor] = command{
 			name:  CMD_CALL,
 			floor: floor,
-			up:    dir == CALLUP,
-			down:  dir == CALLDOWN,
+			up:    dir == UP,
+			down:  dir == DOWN,
 		}
 	}
 }

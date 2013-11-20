@@ -7,15 +7,15 @@ import (
 func TestCallsSameFloor(t *testing.T) {
 	setup()
 
-	e.Call(1, CALLUP)
-	e.Call(1, CALLUP)
+	e.Call(1, UP)
+	e.Call(1, UP)
 
 	assertNbCall(t, e, 1)
 }
 
 func TestCallCurrentFloor(t *testing.T) {
 	setup()
-	e.Call(0, CALLUP)
+	e.Call(0, UP)
 
 	c := nextCommands(e)
 
@@ -27,7 +27,7 @@ func TestCallCurrentFloor(t *testing.T) {
 
 func TestCallTooLow(t *testing.T) {
 	setup()
-	e.Call(-1, CALLUP)
+	e.Call(-1, UP)
 
 	c := e.NextCommand()
 
@@ -39,7 +39,7 @@ func TestCallTooLow(t *testing.T) {
 
 func TestCallTooHigh(t *testing.T) {
 	setup()
-	e.Call(21, CALLUP)
+	e.Call(21, UP)
 
 	c := e.NextCommand()
 
@@ -51,7 +51,7 @@ func TestCallTooHigh(t *testing.T) {
 
 func TestCallUp(t *testing.T) {
 	setup()
-	e.Call(2, CALLUP)
+	e.Call(2, UP)
 
 	c := nextCommands(e)
 
@@ -64,7 +64,7 @@ func TestCallUp(t *testing.T) {
 func TestCallDown(t *testing.T) {
 	setup()
 	e.currentFloor = 3
-	e.Call(1, CALLUP)
+	e.Call(1, UP)
 
 	c := nextCommands(e)
 
@@ -77,11 +77,11 @@ func TestCallDown(t *testing.T) {
 func TestCalls(t *testing.T) {
 	setup()
 
-	e.Call(2, CALLUP)
+	e.Call(2, UP)
 	c := nextCommands(e)
-	e.Call(3, CALLUP)
+	e.Call(3, UP)
 	c += nextCommands(e)
-	e.Call(1, CALLUP)
+	e.Call(1, UP)
 	c += nextCommands(e)
 
 	assert(t, c, UP+UP+OPEN+CLOSE+NOTHING+UP+OPEN+CLOSE+NOTHING+DOWN+DOWN+OPEN+CLOSE+NOTHING)
@@ -94,9 +94,9 @@ func TestCallNegativeFloors(t *testing.T) {
 	setup()
 	e.lowerFloor = -3
 
-	e.Call(2, CALLDOWN)
+	e.Call(2, DOWN)
 	c := nextCommands(e)
-	e.Call(-3, CALLUP)
+	e.Call(-3, UP)
 	c += nextCommands(e)
 
 	assert(t, c, UP+UP+OPEN+CLOSE+NOTHING+DOWN+DOWN+DOWN+DOWN+DOWN+OPEN+CLOSE+NOTHING)

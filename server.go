@@ -9,7 +9,7 @@ import (
 type Elevator interface {
 	NextCommand() string
 	Reset(lowerFloor, higherFloor int)
-	Call(atFloor int, to byte)
+	Call(atFloor int, to string)
 	Go(floorToGo int)
 	UserHasEntered()
 	UserHasExited()
@@ -61,14 +61,7 @@ func callHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	direction := r.FormValue("to")
-	var to byte
-	if direction == "UP" {
-		to = CALLUP
-	} else {
-		to = CALLDOWN
-	}
-	elevator.Call(atFloor, to)
+	elevator.Call(atFloor, r.FormValue("to"))
 }
 
 func goHandler(w http.ResponseWriter, r *http.Request) {

@@ -7,7 +7,7 @@ import (
 func TestGoCalledFloor(t *testing.T) {
 	setup()
 	e.Go(4)
-	e.Call(4, CALLUP)
+	e.Call(4, UP)
 
 	c := nextCommands(e)
 

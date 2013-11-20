@@ -28,7 +28,7 @@ func assertNoMoreGo(t *testing.T, e *Cabin) {
 }
 
 func assertNbGo(t *testing.T, e *Cabin, nbGos int) {
-	if len(e.gos) != nbGos{
+	if len(e.gos) != nbGos {
 		t.Errorf("expected %d GO but was %d", nbGos, len(e.gos))
 	}
 }
@@ -70,8 +70,8 @@ func TestIdle(t *testing.T) {
 
 func TestReset(t *testing.T) {
 	setup()
-	e.Call(2, CALLUP)
-	e.Call(3, CALLDOWN)
+	e.Call(2, UP)
+	e.Call(3, DOWN)
 	e.Go(5)
 	e.UserHasEntered()
 	nextCommands(e)

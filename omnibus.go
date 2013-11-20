@@ -31,7 +31,7 @@ func (o *Omnibus) Reset(l,h int) {
 	o.counter = 0
 }
 
-func (o *Omnibus) Call(atFloor int, to byte) {
+func (o *Omnibus) Call(atFloor int, to string) {
 	fmt.Println("call", atFloor)
 }
 
