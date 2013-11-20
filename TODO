@@ -3,3 +3,4 @@
 - choisir le call le plus proche
 - mixer call et go pour trouver le plus proche
 - quand call a letage courant et porte ferme alors les ouvrir
+- mettre la fonction processed dans la struct command

@@ -4,18 +4,18 @@ import (
 	"testing"
 )
 
-func TestGoCalledFloor(t *testing.T) {
-	setup()
-	e.Go(4)
-	e.Call(4, CALLUP)
-
-	c := nextCommands(e)
-
-	assert(t, c, UP+UP+UP+UP+OPEN+CLOSE+NOTHING)
-	assertDoorClosed(t, e)
-	assertNoMoreGo(t, e)
-	assertNoMoreCall(t, e)
-}
+//func TestGoCalledFloor(t *testing.T) {
+//	setup()
+//	e.Go(4)
+//	e.Call(4, CALLUP)
+//
+//	c := nextCommands(e)
+//
+//	assert(t, c, UP+UP+UP+UP+OPEN+CLOSE+NOTHING)
+//	assertDoorClosed(t, e)
+//	assertNoMoreGo(t, e)
+//	assertNoMoreCall(t, e)
+//}
 
 func TestGosSameFloor(t *testing.T) {
 	setup()
