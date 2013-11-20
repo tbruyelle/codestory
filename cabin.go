@@ -35,22 +35,35 @@ func (c *Cabin) processCommand(cmd *command) string {
 		return NOTHING
 	}
 	if cmd.floor > c.currentFloor {
+		if c.hasCmdCurrentFloor() {
+			return c.processCmdCurrentFloor()
+		}
 		c.currentFloor++
 		return UP
 	}
 	if cmd.floor < c.currentFloor {
+		if c.hasCmdCurrentFloor() {
+			return c.processCmdCurrentFloor()
+		}
 		c.currentFloor--
 		return DOWN
 	}
 	// floor == c.currentFloor
-	c.opened = true
-	c.floorProcessed(cmd.floor)
-	return OPEN
+	return c.processCmdCurrentFloor()
 }
 
 func (c *Cabin) floorProcessed(floor int) {
 	c.deleteGo(floor)
 	c.deleteCall(floor)
+}
+
+func (c *Cabin) processCmdCurrentFloor() string {
+c.opened=true
+c.floorProcessed(c.currentFloor)
+return OPEN}
+
+func (c *Cabin) hasCmdCurrentFloor() bool {
+	return hasFloor(c.gos, c.currentFloor) || hasFloor(c.calls, c.currentFloor)
 }
 
 func findFloor(cmds []command, floor int) int {

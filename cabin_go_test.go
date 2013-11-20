@@ -146,29 +146,31 @@ func TestGoSameDirectionDown(t *testing.T) {
 	assertDoorClosed(t, e)
 }
 
-//func TestGosUpChooseNearest(t *testing.T) {
-//	setup()
-//	e.Go(4)
-//	e.Go(2)
-//
-//	c := nextCommands(e)
-//
-//	assert(t, c, UP+UP+OPEN+CLOSE+UP+UP+OPEN+CLOSE+NOTHING)
-//	assertFloor(t, e, 4)
-//	assertDoorClosed(t, e)
-//	assertNoMoreGo(t, e)
-//}
-//
-//func TestGosDownChooseNearest(t *testing.T) {
-//	setup()
-//	e.currentFloor = 5
-//	e.Go(1)
-//	e.Go(3)
-//
-//	c := nextCommands(e)
-//
-//	assert(t, c, DOWN+OPEN+CLOSE+DOWN+DOWN+OPEN+CLOSE+NOTHING)
-//	assertFloor(t, e, 1)
-//	assertNoMoreGo(t, e)
-//	assertDoorClosed(t, e)
-//}
+func TestGosUpChooseNearest(t *testing.T) {
+	setup()
+	e.Go(4)
+	e.Go(2)
+	e.Go(3)
+
+	c := nextCommands(e)
+
+	assert(t, c, UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 4)
+	assertDoorClosed(t, e)
+	assertNoMoreGo(t, e)
+}
+
+func TestGosDownChooseNearest(t *testing.T) {
+	setup()
+	e.currentFloor = 5
+	e.Go(1)
+	e.Go(3)
+	e.Go(2)
+
+	c := nextCommands(e)
+
+	assert(t, c, DOWN+DOWN+OPEN+CLOSE+DOWN+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 1)
+	assertNoMoreGo(t, e)
+	assertDoorClosed(t, e)
+}
