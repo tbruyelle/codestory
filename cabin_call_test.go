@@ -4,6 +4,34 @@ import (
 	"testing"
 )
 
+func TestCallSameDirectionUp(t *testing.T) {
+	setup()
+	e.Call(2, DOWN)
+	e.Call(3, DOWN)
+	e.Call(5, DOWN)
+
+	c := nextCommands(e)
+
+	assert(t, c, UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+UP+UP+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 5)
+	assertNoMoreCall(t, e)
+	assertDoorClosed(t, e)
+}
+func TestCallSameDirectionDown(t *testing.T) {
+	setup()
+	e.currentFloor = 5
+	e.Call(4, DOWN)
+	e.Call(2, DOWN)
+	e.Call(1, DOWN)
+
+	c := nextCommands(e)
+
+	assert(t, c, DOWN+OPEN+CLOSE+DOWN+DOWN+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 1)
+	assertNoMoreCall(t, e)
+	assertDoorClosed(t, e)
+}
+
 func TestCallsSameFloor(t *testing.T) {
 	setup()
 

@@ -51,8 +51,10 @@ func assertFloor(t *testing.T, c *Cabin, floor int) {
 
 func nextCommands(e Elevator) string {
 	var s string
-	for !strings.Contains(s, NOTHING) {
+	max := 100
+	for !strings.Contains(s, NOTHING) && max >0 {
 		s += e.NextCommand()
+		max--
 	}
 	return s
 }

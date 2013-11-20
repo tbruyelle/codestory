@@ -13,8 +13,8 @@ type command struct {
 type Cabin struct {
 	lowerFloor, higherFloor, currentFloor int
 	opened                                bool
-	calls                                 map[int]command
-	gos                                   map[int]command
+	calls                                 []command
+	gos                                   []command
 }
 
 const (
@@ -49,8 +49,38 @@ func (c *Cabin) processCommand(cmd *command) string {
 }
 
 func (c *Cabin) floorProcessed(floor int) {
-	delete(c.gos, floor)
-	delete(c.calls, floor)
+	c.deleteGo(floor)
+	c.deleteCall(floor)
+}
+
+func findFloor(cmds []command, floor int) int {
+	for i := 0; i < len(cmds); i++ {
+		if cmds[i].floor == floor {
+			return i
+		}
+	}
+	return len(cmds)
+}
+
+func hasFloor(cmds []command, floor int) bool {
+	return findFloor(cmds, floor) < len(cmds)
+}
+
+func (c *Cabin) deleteGo(floor int) {
+	i := findFloor(c.gos, floor)
+	//fmt.Printf("delete floor %d GOS %+v\nfound %d\n", floor, c.gos, i)
+	if i < len(c.gos) {
+		c.gos = c.gos[:i+copy(c.gos[i:], c.gos[i+1:])]
+		//cmds[i], cmds = cmds[len(cmds)-1], cmds[:len(cmds)-1]
+	}
+}
+
+func (c *Cabin) deleteCall(floor int) {
+	i := findFloor(c.calls, floor)
+	if i < len(c.calls) {
+		c.calls = c.calls[:i+copy(c.calls[i:], c.calls[i+1:])]
+		//cmds[i], cmds = cmds[len(cmds)-1], cmds[:len(cmds)-1]
+	}
 }
 
 func (c *Cabin) trace(msg string) {
@@ -82,28 +112,46 @@ func (c *Cabin) Reset(lowerFloor, higherFloor int) {
 }
 
 func (c *Cabin) Call(floor int, dir string) {
-	if call, ok := c.calls[floor]; ok {
+	ind := findFloor(c.calls, floor)
+	if ind < len(c.calls) {
+		call := c.calls[ind]
 		call.up = true
 		call.down = true
 	} else {
-		c.calls[floor] = command{
-			name:  CMD_CALL,
-			floor: floor,
-			up:    dir == UP,
-			down:  dir == DOWN,
-		}
+		c.calls = append(c.calls,
+			command{
+				name:  CMD_CALL,
+				floor: floor,
+				up:    dir == UP,
+				down:  dir == DOWN,
+			})
 	}
 }
 
 func (c *Cabin) Go(floor int) {
-	if _, ok := c.gos[floor]; !ok {
-		c.gos[floor] = command{
-			name:  CMD_GO,
-			floor: floor,
-			up:    floor > c.currentFloor,
-			down:  floor < c.currentFloor,
-		}
+	if !hasFloor(c.gos, floor) {
+		c.gos = append(c.gos,
+			command{
+				name:  CMD_GO,
+				floor: floor,
+				up:    floor > c.currentFloor,
+				down:  floor < c.currentFloor,
+			})
 	}
+}
+
+func (c *Cabin) nextCall() *command {
+	if len(c.calls) == 0 {
+		return nil
+	}
+	return &c.calls[0]
+}
+
+func (c *Cabin) nextGo() *command {
+	if len(c.gos) == 0 {
+		return nil
+	}
+	return &c.gos[0]
 }
 
 func (c *Cabin) UserHasEntered() {
@@ -123,28 +171,8 @@ func initCabin(c *Cabin, lowerFloor, higherFloor int) {
 	c.lowerFloor = lowerFloor
 	c.currentFloor = 0
 	c.higherFloor = higherFloor
-	c.calls = make(map[int]command)
-	c.gos = make(map[int]command)
+	c.calls = make([]command, 0)
+	c.gos = make([]command, 0)
 	c.opened = false
 	c.trace("init")
-}
-
-func (c *Cabin) nextCall() *command {
-	if len(c.calls) == 0 {
-		return nil
-	}
-	for _, cmd := range c.calls {
-		return &cmd
-	}
-	return nil
-}
-
-func (c *Cabin) nextGo() *command {
-	if len(c.gos) == 0 {
-		return nil
-	}
-	for _, cmd := range c.gos {
-		return &cmd
-	}
-	return nil
 }
