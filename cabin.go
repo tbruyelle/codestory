@@ -31,9 +31,9 @@ const (
 
 var debug = false
 
-func (c *Cabin) processCommand(cmd *command, processed func(f int)) string {
+func (c *Cabin) processCommand(cmd *command) string {
 	if cmd.floor < c.lowerFloor || cmd.floor > c.higherFloor {
-		processed(cmd.floor)
+		c.floorProcessed(cmd.floor)
 		return NOTHING
 	}
 	if cmd.floor > c.currentFloor {
@@ -46,8 +46,13 @@ func (c *Cabin) processCommand(cmd *command, processed func(f int)) string {
 	}
 	// floor == c.currentFloor
 	c.opened = true
-	processed(cmd.floor)
+	c.floorProcessed(cmd.floor)
 	return OPEN
+}
+
+func (c *Cabin) floorProcessed(floor int) {
+	delete(c.gos, floor)
+	delete(c.calls, floor)
 }
 
 func (c *Cabin) trace(msg string) {
@@ -65,12 +70,11 @@ func (c *Cabin) NextCommand() (ret string) {
 		return CLOSE
 	}
 	cmd := c.nextGo()
-	if cmd != nil {
-		return c.processCommand(cmd, c.goProcessed)
+	if cmd == nil {
+		cmd = c.nextCall()
 	}
-	cmd = c.nextCall()
 	if cmd != nil {
-		return c.processCommand(cmd, c.callProcessed)
+		return c.processCommand(cmd)
 	}
 	return NOTHING
 }
@@ -137,10 +141,6 @@ func (c *Cabin) nextCall() *command {
 	return nil
 }
 
-func (c *Cabin) callProcessed(floor int) {
-	delete(c.calls, floor)
-}
-
 func (c *Cabin) nextGo() *command {
 	if len(c.gos) == 0 {
 		return nil
@@ -152,5 +152,4 @@ func (c *Cabin) nextGo() *command {
 }
 
 func (c *Cabin) goProcessed(floor int) {
-	delete(c.gos, floor)
 }
