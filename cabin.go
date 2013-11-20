@@ -148,6 +148,3 @@ func (c *Cabin) nextGo() *command {
 	}
 	return nil
 }
-
-func (c *Cabin) goProcessed(floor int) {
-}
