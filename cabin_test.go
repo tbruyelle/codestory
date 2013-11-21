@@ -170,3 +170,4 @@ func TestUserCannotExitIfEmpty(t *testing.T) {
 
 	assertCrew(t, e, 0)
 }
+

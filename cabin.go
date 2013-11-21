@@ -31,109 +31,6 @@ const (
 
 var debug = false
 
-func (c *Cabin) processCommand(cmd *command) string {
-	if cmd.floor < c.lowerFloor || cmd.floor > c.higherFloor {
-		c.floorProcessed(cmd.floor)
-		return NOTHING
-	}
-	if cmd.floor > c.currentFloor {
-		if c.shouldStopAtCurrentFloor(cmd) {
-			return c.processCmdCurrentFloor()
-		}
-		c.currentFloor++
-		return UP
-	}
-	if cmd.floor < c.currentFloor {
-		if c.shouldStopAtCurrentFloor(cmd) {
-			return c.processCmdCurrentFloor()
-		}
-		c.currentFloor--
-		return DOWN
-	}
-	// floor == c.currentFloor
-	return c.processCmdCurrentFloor()
-}
-
-func (c *Cabin) floorProcessed(floor int) {
-	c.deleteGo(floor)
-	c.deleteCall(floor)
-}
-
-func (c *Cabin) processCmdCurrentFloor() string {
-	c.opened = true
-	c.floorProcessed(c.currentFloor)
-	return OPEN
-}
-
-func (c *Cabin) shouldStopAtCurrentFloor(currentCmd *command) bool {
-	if hasFloor(c.gos, c.currentFloor) {
-		return true
-	}
-	i := findFloor(c.calls, c.currentFloor)
-	if i < len(c.calls) {
-		// found a call for current floor
-		if currentCmd == nil {
-			return true
-		}
-		// check if current direction matches with call direction
-		switch c.direction {
-		case UP:
-			if currentCmd.floor == c.higherFloor {
-				// the destination is the higher floor,
-				// so stop if CALL UP
-				return c.calls[i].up
-			}
-			return c.calls[i].up && currentCmd.up
-		case DOWN:
-			if currentCmd.floor == c.lowerFloor {
-				// the destination is the lower floor,
-				// so stop if CALL down
-				return c.calls[i].down
-			}
-			return c.calls[i].down && currentCmd.down
-		default:
-			fmt.Println("What to do here ?", c.calls[i], currentCmd, c.direction)
-		}
-	}
-	return false
-}
-
-func findFloor(cmds []command, floor int) int {
-	for i := 0; i < len(cmds); i++ {
-		if cmds[i].floor == floor {
-			return i
-		}
-	}
-	return len(cmds)
-}
-
-func hasFloor(cmds []command, floor int) bool {
-	return findFloor(cmds, floor) < len(cmds)
-}
-
-func (c *Cabin) deleteGo(floor int) {
-	i := findFloor(c.gos, floor)
-	//fmt.Printf("delete floor %d GOS %+v\nfound %d\n", floor, c.gos, i)
-	if i < len(c.gos) {
-		c.gos = c.gos[:i+copy(c.gos[i:], c.gos[i+1:])]
-		//cmds[i], cmds = cmds[len(cmds)-1], cmds[:len(cmds)-1]
-	}
-}
-
-func (c *Cabin) deleteCall(floor int) {
-	i := findFloor(c.calls, floor)
-	if i < len(c.calls) {
-		c.calls = c.calls[:i+copy(c.calls[i:], c.calls[i+1:])]
-		//cmds[i], cmds = cmds[len(cmds)-1], cmds[:len(cmds)-1]
-	}
-}
-
-func (c *Cabin) trace(msg string) {
-	if debug {
-		fmt.Printf("%s:(%d/%d) opened=%t current=%d\nCALLS===%+v\nGOS===%+v\n\n", msg, c.lowerFloor, c.higherFloor, c.opened, c.currentFloor, c.calls, c.gos)
-	}
-}
-
 func (c *Cabin) NextCommand() (ret string) {
 	c.trace("Start NEXT")
 	defer func() { c.trace("RETURN " + ret) }()
@@ -246,4 +143,110 @@ func initCabin(c *Cabin, lowerFloor, higherFloor, cabinSize int) {
 	c.cabinSize = cabinSize
 	c.crew = 0
 	c.trace("init")
+}
+
+func (c *Cabin)isFull() {
+return c.crew>=c.cabinSize}
+
+func (c *Cabin) processCommand(cmd *command) string {
+	if cmd.floor < c.lowerFloor || cmd.floor > c.higherFloor {
+		c.floorProcessed(cmd.floor)
+		return NOTHING
+	}
+	if cmd.floor > c.currentFloor {
+		if c.shouldStopAtCurrentFloor(cmd) {
+			return c.processCmdCurrentFloor()
+		}
+		c.currentFloor++
+		return UP
+	}
+	if cmd.floor < c.currentFloor {
+		if c.shouldStopAtCurrentFloor(cmd) {
+			return c.processCmdCurrentFloor()
+		}
+		c.currentFloor--
+		return DOWN
+	}
+	// floor == c.currentFloor
+	return c.processCmdCurrentFloor()
+}
+
+func (c *Cabin) floorProcessed(floor int) {
+	c.deleteGo(floor)
+	c.deleteCall(floor)
+}
+
+func (c *Cabin) processCmdCurrentFloor() string {
+	c.opened = true
+	c.floorProcessed(c.currentFloor)
+	return OPEN
+}
+
+func (c *Cabin) shouldStopAtCurrentFloor(currentCmd *command) bool {
+	if hasFloor(c.gos, c.currentFloor) {
+		return true
+	}
+	i := findFloor(c.calls, c.currentFloor)
+	if i < len(c.calls) {
+		// found a call for current floor
+		if currentCmd == nil {
+			return true
+		}
+		// check if current direction matches with call direction
+		switch c.direction {
+		case UP:
+			if currentCmd.floor == c.higherFloor {
+				// the destination is the higher floor,
+				// so stop if CALL UP
+				return c.calls[i].up
+			}
+			return c.calls[i].up && currentCmd.up
+		case DOWN:
+			if currentCmd.floor == c.lowerFloor {
+				// the destination is the lower floor,
+				// so stop if CALL down
+				return c.calls[i].down
+			}
+			return c.calls[i].down && currentCmd.down
+		default:
+			fmt.Println("What to do here ?", c.calls[i], currentCmd, c.direction)
+		}
+	}
+	return false
+}
+
+func findFloor(cmds []command, floor int) int {
+	for i := 0; i < len(cmds); i++ {
+		if cmds[i].floor == floor {
+			return i
+		}
+	}
+	return len(cmds)
+}
+
+func hasFloor(cmds []command, floor int) bool {
+	return findFloor(cmds, floor) < len(cmds)
+}
+
+func (c *Cabin) deleteGo(floor int) {
+	i := findFloor(c.gos, floor)
+	//fmt.Printf("delete floor %d GOS %+v\nfound %d\n", floor, c.gos, i)
+	if i < len(c.gos) {
+		c.gos = c.gos[:i+copy(c.gos[i:], c.gos[i+1:])]
+		//cmds[i], cmds = cmds[len(cmds)-1], cmds[:len(cmds)-1]
+	}
+}
+
+func (c *Cabin) deleteCall(floor int) {
+	i := findFloor(c.calls, floor)
+	if i < len(c.calls) {
+		c.calls = c.calls[:i+copy(c.calls[i:], c.calls[i+1:])]
+		//cmds[i], cmds = cmds[len(cmds)-1], cmds[:len(cmds)-1]
+	}
+}
+
+func (c *Cabin) trace(msg string) {
+	if debug {
+		fmt.Printf("%s:(%d/%d) opened=%t current=%d\nCALLS===%+v\nGOS===%+v\n\n", msg, c.lowerFloor, c.higherFloor, c.opened, c.currentFloor, c.calls, c.gos)
+	}
 }
