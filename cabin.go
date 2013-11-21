@@ -26,7 +26,7 @@ const (
 	UP       = "UP"
 	DOWN     = "DOWN"
 	NOTHING  = "NOTHING"
-	POOP = "POOP"
+	POOP     = "POOP"
 	CMD_CALL = 'c'
 	CMD_GO   = 'g'
 )
@@ -74,7 +74,8 @@ func (c *Cabin) NextCommand() (ret string) {
 	return NOTHING
 }
 
-func (c *Cabin) Reset(lowerFloor, higherFloor, cabinSize int) {
+func (c *Cabin) Reset(lowerFloor, higherFloor, cabinSize int, cause string) {
+	fmt.Printf("---> Reset requested %d/%d/%d msg=%s\n", lowerFloor, higherFloor, cabinSize, cause)
 	initCabin(c, lowerFloor, higherFloor, cabinSize)
 }
 

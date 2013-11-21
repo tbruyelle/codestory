@@ -9,7 +9,7 @@ import (
 
 type Elevator interface {
 	NextCommand() string
-	Reset(lowerFloor, higherFloor, cabinSize int)
+	Reset(lowerFloor, higherFloor, cabinSize int, cause string)
 	Call(atFloor int, to string)
 	Go(floorToGo int)
 	UserHasEntered()
@@ -67,7 +67,7 @@ func resetHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		c = 50
 	}
-	elevator.Reset(l, h, c)
+	elevator.Reset(l, h, c, r.FormValue("cause"))
 }
 
 func callHandler(w http.ResponseWriter, r *http.Request) {

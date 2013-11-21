@@ -110,7 +110,7 @@ func TestReset(t *testing.T) {
 	nextCommands(e)
 	e.opened = true
 
-	e.Reset(-1, 50, 500)
+	e.Reset(-1, 50, 500, "yeah")
 
 	assertFloor(t, e, 0)
 	if e.lowerFloor != -1 {

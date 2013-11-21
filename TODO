@@ -1,1 +1,2 @@
-- mixer call et go pour trouver le plus proche
+- choisir la commande GO la plus eloignee pour optimiser les aller-retours
+- mettre un poids en fonction du nombre de call/go ?

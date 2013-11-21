@@ -30,7 +30,7 @@ func (o *Omnibus) NextCommand() string {
 	return commands[i]
 }
 
-func (o *Omnibus) Reset(l,h,c int) {
+func (o *Omnibus) Reset(l,h,c int,s string) {
 	o.counter = 0
 }
 
