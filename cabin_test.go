@@ -171,3 +171,11 @@ func TestUserCannotExitIfEmpty(t *testing.T) {
 	assertCrew(t, e, 0)
 }
 
+func TestDitdlamerde(t *testing.T) {
+	setup()
+	e.Ditdlamerde()
+
+	c := nextCommands(e)
+
+	assert(t, c, POOP+NOTHING)
+}

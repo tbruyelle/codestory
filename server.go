@@ -9,11 +9,12 @@ import (
 
 type Elevator interface {
 	NextCommand() string
-	Reset(lowerFloor, higherFloor,cabinSize int)
+	Reset(lowerFloor, higherFloor, cabinSize int)
 	Call(atFloor int, to string)
 	Go(floorToGo int)
 	UserHasEntered()
 	UserHasExited()
+	Ditdlamerde()
 }
 
 var elevator Elevator
@@ -26,7 +27,7 @@ func main() {
 			fmt.Println("Debug enabled")
 		}
 	}
-	elevator = NewCabin(0, 5, 50,debug)
+	elevator = NewCabin(0, 5, 50, debug)
 
 	http.HandleFunc("/", defaultHandler)
 	http.HandleFunc("/nextCommand", nextCommandHandler)
@@ -35,6 +36,7 @@ func main() {
 	http.HandleFunc("/go", goHandler)
 	http.HandleFunc("/userHasEntered", userHasEnteredHandler)
 	http.HandleFunc("/userHasExited", userHasExitedHandler)
+	http.HandleFunc("/ditdlamerde", shitHandler)
 	err := http.ListenAndServe(":8181", nil)
 	if err != nil {
 		fmt.Println(err)
@@ -92,4 +94,8 @@ func userHasEnteredHandler(w http.ResponseWriter, r *http.Request) {
 
 func userHasExitedHandler(w http.ResponseWriter, r *http.Request) {
 	elevator.UserHasExited()
+}
+
+func shitHandler(w http.ResponseWriter, r *http.Request) {
+	elevator.Ditdlamerde()
 }

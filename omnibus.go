@@ -21,6 +21,9 @@ var commands = []string{
 	"OPEN", "CLOSE", "DOWN",
 }
 
+func (o *Omnibus) Ditdlamerde() {
+}
+
 func (o *Omnibus) NextCommand() string {
 	i := o.counter % len(commands)
 	o.counter = o.counter + 1

@@ -17,6 +17,7 @@ type Cabin struct {
 	gos                                   []command
 	direction                             string
 	cabinSize, crew                       int
+	ditdlamerde                           bool
 }
 
 const (
@@ -25,11 +26,16 @@ const (
 	UP       = "UP"
 	DOWN     = "DOWN"
 	NOTHING  = "NOTHING"
+	POOP = "POOP"
 	CMD_CALL = 'c'
 	CMD_GO   = 'g'
 )
 
 var debug = false
+
+func (c *Cabin) Ditdlamerde() {
+	c.ditdlamerde = true
+}
 
 func (c *Cabin) NextCommand() (ret string) {
 	c.trace("Start NEXT")
@@ -42,6 +48,11 @@ func (c *Cabin) NextCommand() (ret string) {
 			c.direction = NOTHING
 		}
 	}()
+
+	if c.ditdlamerde {
+		c.ditdlamerde = false
+		return POOP
+	}
 
 	if c.opened {
 		// before close check is theres a command for currentFloor
