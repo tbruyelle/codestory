@@ -4,6 +4,21 @@ import (
 	"testing"
 )
 
+func TestMixedPreventStopCallIfFull(t *testing.T) {
+	setup()
+	e.crew = e.cabinSize
+	e.Go(2)
+	e.Call(1, UP)
+
+	c := nextCommands(e)
+
+	assert(t, c, UP+UP+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertNoMoreCall(t, e)
+	assertNoMoreGo(t, e)
+	assertFloor(t, e, 1)
+	assertDoorClosed(t, e)
+}
+
 func TestMixedGoDownCallUpCurrentFloor(t *testing.T) {
 	setup()
 	e.currentFloor = 3
