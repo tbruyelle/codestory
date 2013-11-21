@@ -1,2 +1,4 @@
 - choisir la commande GO la plus eloignee pour optimiser les aller-retours
 - mettre un poids en fonction du nombre de call/go ?
+- remplacer direction par lastCommand et virer opened
+- mode over capacity?
