@@ -11,9 +11,27 @@ func setup() {
 	e = NewCabin(0, 5, 10, false)
 }
 
+func userEntered(e *Cabin, nb int) {
+	for i := 0; i < nb; i++ {
+		e.UserHasEntered()
+	}
+}
+
+func userExited(e *Cabin, nb int) {
+	for i := 0; i < nb; i++ {
+		e.UserHasExited()
+	}
+}
+
 func assert(t *testing.T, value string, want string) {
 	if value != want {
 		t.Errorf("expected %s but was %s", want, value)
+	}
+}
+
+func assertCrew(t *testing.T, e *Cabin, crew int) {
+	if e.crew != crew {
+		t.Errorf("expected crew %d but was %d", crew, e.crew)
 	}
 }
 
@@ -104,6 +122,51 @@ func TestReset(t *testing.T) {
 	assertNoMoreCall(t, e)
 	assertNoMoreGo(t, e)
 	assertDoorClosed(t, e)
-	if e.cabinSize!=500{
-	t.Errorf("bad cabinsize")}
+	if e.cabinSize != 500 {
+		t.Errorf("bad cabinsize")
+	}
+	assertCrew(t, e, 0)
+}
+
+func TestUserHasEntered(t *testing.T) {
+	setup()
+
+	e.UserHasEntered()
+
+	assertCrew(t, e, 1)
+}
+
+func TestUserHasExited(t *testing.T) {
+	setup()
+	e.crew = 1
+
+	e.UserHasExited()
+
+	assertCrew(t, e, 0)
+}
+
+func TestUsersEnterAndExit(t *testing.T) {
+	setup()
+
+	userEntered(e, 3)
+	userExited(e, 2)
+
+	assertCrew(t, e, 1)
+}
+
+func TestUserCannotEnterIfFull(t *testing.T) {
+	setup()
+	e.crew = e.cabinSize
+
+	e.UserHasEntered()
+
+	assertCrew(t, e, e.cabinSize)
+}
+
+func TestUserCannotExitIfEmpty(t *testing.T) {
+	setup()
+
+	e.UserHasExited()
+
+	assertCrew(t, e, 0)
 }

@@ -16,7 +16,7 @@ type Cabin struct {
 	calls                                 []command
 	gos                                   []command
 	direction                             string
-	cabinSize                             int
+	cabinSize, crew                       int
 }
 
 const (
@@ -214,9 +214,19 @@ func (c *Cabin) nextGo() *command {
 }
 
 func (c *Cabin) UserHasEntered() {
+	if c.crew >= c.cabinSize {
+		fmt.Println("OUps cabin size exceeded !")
+		return
+	}
+	c.crew++
 }
 
 func (c *Cabin) UserHasExited() {
+	if c.crew <= 0 {
+		fmt.Println("OUps cabin is empty")
+		return
+	}
+	c.crew--
 }
 
 func NewCabin(lowerFloor, higherFloor, cabinSize int, d bool) *Cabin {
@@ -234,5 +244,6 @@ func initCabin(c *Cabin, lowerFloor, higherFloor, cabinSize int) {
 	c.gos = make([]command, 0)
 	c.opened = false
 	c.cabinSize = cabinSize
+	c.crew = 0
 	c.trace("init")
 }
