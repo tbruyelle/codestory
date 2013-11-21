@@ -145,8 +145,9 @@ func initCabin(c *Cabin, lowerFloor, higherFloor, cabinSize int) {
 	c.trace("init")
 }
 
-func (c *Cabin)isFull() {
-return c.crew>=c.cabinSize}
+func (c *Cabin) isFull() bool {
+	return c.crew >= c.cabinSize
+}
 
 func (c *Cabin) processCommand(cmd *command) string {
 	if cmd.floor < c.lowerFloor || cmd.floor > c.higherFloor {
@@ -185,6 +186,10 @@ func (c *Cabin) processCmdCurrentFloor() string {
 func (c *Cabin) shouldStopAtCurrentFloor(currentCmd *command) bool {
 	if hasFloor(c.gos, c.currentFloor) {
 		return true
+	}
+	if c.isFull() {
+		// never stop if cabin is full
+		return false
 	}
 	i := findFloor(c.calls, c.currentFloor)
 	if i < len(c.calls) {
