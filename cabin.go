@@ -36,14 +36,14 @@ func (c *Cabin) processCommand(cmd *command) string {
 		return NOTHING
 	}
 	if cmd.floor > c.currentFloor {
-		if c.hasCmdCurrentFloor(cmd) {
+		if c.shouldStopAtCurrentFloor(cmd) {
 			return c.processCmdCurrentFloor()
 		}
 		c.currentFloor++
 		return UP
 	}
 	if cmd.floor < c.currentFloor {
-		if c.hasCmdCurrentFloor(cmd) {
+		if c.shouldStopAtCurrentFloor(cmd) {
 			return c.processCmdCurrentFloor()
 		}
 		c.currentFloor--
@@ -64,7 +64,7 @@ func (c *Cabin) processCmdCurrentFloor() string {
 	return OPEN
 }
 
-func (c *Cabin) hasCmdCurrentFloor(currentCmd *command) bool {
+func (c *Cabin) shouldStopAtCurrentFloor(currentCmd *command) bool {
 	if hasFloor(c.gos, c.currentFloor) {
 		return true
 	}
@@ -74,21 +74,14 @@ func (c *Cabin) hasCmdCurrentFloor(currentCmd *command) bool {
 		if currentCmd == nil {
 			return true
 		}
-		// check if current command direction matches with call direction
-		switch currentCmd.name {
-		case CMD_GO:
-			// GO command: directions match if they are identicals
-			return c.calls[i].up && currentCmd.up || c.calls[i].down && currentCmd.down
-		case CMD_CALL:
-			// CALL command: directions match if they are identicals and
-			// match the elevator current direction
-			switch c.direction {
+		// check if current direction matches with call direction
+		switch c.direction {
 			case UP:
-				if currentCmd.floor==c.higherFloor{
-				// the destination is the higher floor,
-			// so stop if CALL UP
-		return c.calls[i].up
-		}
+				if currentCmd.floor == c.higherFloor {
+					// the destination is the higher floor,
+					// so stop if CALL UP
+					return c.calls[i].up
+				}
 				return c.calls[i].up && currentCmd.up
 			case DOWN:
 				if currentCmd.floor == c.lowerFloor {
@@ -100,7 +93,6 @@ func (c *Cabin) hasCmdCurrentFloor(currentCmd *command) bool {
 			default:
 				fmt.Println("What to do here ?", c.calls[i], currentCmd, c.direction)
 			}
-		}
 	}
 	return false
 }
@@ -155,7 +147,7 @@ func (c *Cabin) NextCommand() (ret string) {
 
 	if c.opened {
 		// before close check is theres a command for currentFloor
-		if c.hasCmdCurrentFloor(nil) {
+		if c.shouldStopAtCurrentFloor(nil) {
 			// command for current floor, keep the door opened
 			c.floorProcessed(c.currentFloor)
 			return NOTHING
