@@ -4,6 +4,143 @@ import (
 	"testing"
 )
 
+func TestCallDownAtMaxFloorStopAtCallUp(t *testing.T) {
+	setup()
+	e.Call(5, DOWN)
+	e.Call(4, UP)
+	e.Call(1, UP)
+
+	c := nextCommands(e)
+
+	assert(t, c, UP+OPEN+CLOSE+UP+UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 5)
+	assertDoorClosed(t, e)
+	assertNoMoreCall(t, e)
+}
+
+func TestCallUpAtMinFloorStopAtCallDown(t *testing.T) {
+	setup()
+	e.currentFloor = 5
+	e.Call(0, UP)
+	e.Call(4, DOWN)
+	e.Call(1, DOWN)
+
+	c := nextCommands(e)
+
+	assert(t, c, DOWN+OPEN+CLOSE+DOWN+DOWN+DOWN+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 0)
+	assertDoorClosed(t, e)
+	assertNoMoreCall(t, e)
+}
+
+func TestDownCallDownSkipCallUp(t *testing.T) {
+	setup()
+	e.currentFloor = 5
+	e.Call(3, UP)
+	e.Call(4, DOWN)
+
+	c := nextCommands(e)
+
+	assert(t, c, DOWN+DOWN+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 4)
+	assertDoorClosed(t, e)
+	assertNoMoreCall(t, e)
+}
+
+func TestUpCallUpSkipCallDown(t *testing.T) {
+	setup()
+	e.Call(3, DOWN)
+	e.Call(2, UP)
+
+	c := nextCommands(e)
+
+	assert(t, c, UP+UP+UP+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 2)
+	assertDoorClosed(t, e)
+	assertNoMoreCall(t, e)
+}
+
+func TestUpCallDownSkipCallUp(t *testing.T) {
+	setup()
+	e.Call(4, DOWN)
+	e.Call(3, UP)
+
+	c := nextCommands(e)
+
+	assert(t, c, UP+UP+UP+UP+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 3)
+	assertDoorClosed(t, e)
+	assertNoMoreCall(t, e)
+}
+
+func TestDownCallUpSkipCallDown(t *testing.T) {
+	setup()
+	e.currentFloor = 5
+	e.Call(2, UP)
+	e.Call(3, DOWN)
+
+	c := nextCommands(e)
+
+	assert(t, c, DOWN+DOWN+DOWN+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 3)
+	assertDoorClosed(t, e)
+	assertNoMoreCall(t, e)
+}
+
+func TestDownCallUpSkipCallUp(t *testing.T) {
+	setup()
+	e.currentFloor = 5
+	e.Call(3, UP)
+	e.Call(4, UP)
+
+	c := nextCommands(e)
+
+	assert(t, c, DOWN+DOWN+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 4)
+	assertDoorClosed(t, e)
+	assertNoMoreCall(t, e)
+}
+
+func TestUpCallDownSkipCallDown(t *testing.T) {
+	setup()
+	e.Call(3, DOWN)
+	e.Call(2, DOWN)
+
+	c := nextCommands(e)
+
+	assert(t, c, UP+UP+UP+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 2)
+	assertDoorClosed(t, e)
+	assertNoMoreCall(t, e)
+}
+
+func TestUpCallUpStopAtCallUp(t *testing.T) {
+	setup()
+	e.Call(4, UP)
+	e.Call(3, UP)
+
+	c := nextCommands(e)
+
+	assert(t, c, UP+UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 4)
+	assertDoorClosed(t, e)
+	assertNoMoreCall(t, e)
+}
+
+func TestDownCallDownStopAtCallDown(t *testing.T) {
+	setup()
+	e.currentFloor = 5
+	e.Call(2, DOWN)
+	e.Call(3, DOWN)
+
+	c := nextCommands(e)
+
+	assert(t, c, DOWN+DOWN+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertFloor(t, e, 2)
+	assertDoorClosed(t, e)
+	assertNoMoreCall(t, e)
+}
+
 func TestCallCurrentFloorOpenedDoor(t *testing.T) {
 	setup()
 	e.opened = true

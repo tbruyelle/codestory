@@ -15,6 +15,7 @@ type Cabin struct {
 	opened                                bool
 	calls                                 []command
 	gos                                   []command
+	direction                             string
 }
 
 const (
@@ -35,14 +36,14 @@ func (c *Cabin) processCommand(cmd *command) string {
 		return NOTHING
 	}
 	if cmd.floor > c.currentFloor {
-		if c.hasCmdCurrentFloor() {
+		if c.hasCmdCurrentFloor(cmd) {
 			return c.processCmdCurrentFloor()
 		}
 		c.currentFloor++
 		return UP
 	}
 	if cmd.floor < c.currentFloor {
-		if c.hasCmdCurrentFloor() {
+		if c.hasCmdCurrentFloor(cmd) {
 			return c.processCmdCurrentFloor()
 		}
 		c.currentFloor--
@@ -63,8 +64,45 @@ func (c *Cabin) processCmdCurrentFloor() string {
 	return OPEN
 }
 
-func (c *Cabin) hasCmdCurrentFloor() bool {
-	return hasFloor(c.gos, c.currentFloor) || hasFloor(c.calls, c.currentFloor)
+func (c *Cabin) hasCmdCurrentFloor(currentCmd *command) bool {
+	if hasFloor(c.gos, c.currentFloor) {
+		return true
+	}
+	i := findFloor(c.calls, c.currentFloor)
+	if i < len(c.calls) {
+		// found a call for current floor
+		if currentCmd == nil {
+			return true
+		}
+		// check if current command direction matches with call direction
+		switch currentCmd.name {
+		case CMD_GO:
+			// GO command: directions match if they are identicals
+			return c.calls[i].up && currentCmd.up || c.calls[i].down && currentCmd.down
+		case CMD_CALL:
+			// CALL command: directions match if they are identicals and
+			// match the elevator current direction
+			switch c.direction {
+			case UP:
+				if currentCmd.floor==c.higherFloor{
+				// the destination is the higher floor,
+			// so stop if CALL UP
+		return c.calls[i].up
+		}
+				return c.calls[i].up && currentCmd.up
+			case DOWN:
+				if currentCmd.floor == c.lowerFloor {
+					// the destination is the lower floor,
+					// so stop if CALL down
+					return c.calls[i].down
+				}
+				return c.calls[i].down && currentCmd.down
+			default:
+				fmt.Println("What to do here ?", c.calls[i], currentCmd, c.direction)
+			}
+		}
+	}
+	return false
 }
 
 func findFloor(cmds []command, floor int) int {
@@ -106,10 +144,18 @@ func (c *Cabin) trace(msg string) {
 func (c *Cabin) NextCommand() (ret string) {
 	c.trace("Start NEXT")
 	defer func() { c.trace("RETURN " + ret) }()
+	defer func() {
+		// remind the elevator direction
+		if ret == UP || ret == DOWN {
+			c.direction = ret
+		} else {
+			c.direction = NOTHING
+		}
+	}()
 
 	if c.opened {
 		// before close check is theres a command for currentFloor
-		if c.hasCmdCurrentFloor() {
+		if c.hasCmdCurrentFloor(nil) {
 			// command for current floor, keep the door opened
 			c.floorProcessed(c.currentFloor)
 			return NOTHING
