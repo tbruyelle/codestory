@@ -15,6 +15,7 @@ type Elevator interface {
 	UserHasEntered()
 	UserHasExited()
 	Ditdlamerde()
+	Debug(enable bool)
 }
 
 var elevator Elevator
@@ -37,6 +38,7 @@ func main() {
 	http.HandleFunc("/userHasEntered", userHasEnteredHandler)
 	http.HandleFunc("/userHasExited", userHasExitedHandler)
 	http.HandleFunc("/ditdlamerde", shitHandler)
+	http.HandleFunc("/debug", debugHandler)
 	err := http.ListenAndServe(":8181", nil)
 	if err != nil {
 		fmt.Println(err)
@@ -98,4 +100,8 @@ func userHasExitedHandler(w http.ResponseWriter, r *http.Request) {
 
 func shitHandler(w http.ResponseWriter, r *http.Request) {
 	elevator.Ditdlamerde()
+}
+
+func debugHandler(w http.ResponseWriter, r *http.Request) {
+	elevator.Debug(r.FormValue("enabled") == "true")
 }

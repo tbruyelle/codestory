@@ -179,3 +179,23 @@ func TestDitdlamerde(t *testing.T) {
 
 	assert(t, c, POOP+NOTHING)
 }
+
+func TestDebugEnabled(t *testing.T) {
+	setup()
+
+	e.Debug(true)
+
+	if !e.debug {
+		t.Errorf("debug should be enabled")
+	}
+}
+func TestDebugDisabled(t *testing.T) {
+	setup()
+	e.debug = true
+
+	e.Debug(false)
+
+	if e.debug {
+		t.Errorf("debug should be disabled")
+	}
+}

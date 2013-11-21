@@ -21,6 +21,9 @@ var commands = []string{
 	"OPEN", "CLOSE", "DOWN",
 }
 
+func (o *Omnibus) Debug(enabled bool) {
+}
+
 func (o *Omnibus) Ditdlamerde() {
 }
 

@@ -10,6 +10,16 @@ type command struct {
 	up, down bool
 }
 
+func (c command) String() string {
+	var s string
+	if c.name == CMD_CALL {
+		s = "CALL"
+	} else {
+		s = "GO"
+	}
+	return fmt.Sprintf("(%s floor=%d up=%t down=%t)", s, c.floor, c.up, c.down)
+}
+
 type Cabin struct {
 	lowerFloor, higherFloor, currentFloor int
 	opened                                bool
@@ -17,7 +27,13 @@ type Cabin struct {
 	gos                                   []command
 	direction                             string
 	cabinSize, crew                       int
-	ditdlamerde                           bool
+	debug, ditdlamerde                    bool
+}
+
+func (c *Cabin) String() string {
+	return fmt.Sprintf("open=%t direction=%s crew=%d/%d (%d/%d) -- floor=%d\ngos=%s\ncalls=%s",
+		c.opened, c.direction, c.crew, c.cabinSize,
+		c.lowerFloor, c.higherFloor, c.currentFloor, c.gos, c.calls)
 }
 
 const (
@@ -31,15 +47,23 @@ const (
 	CMD_GO   = 'g'
 )
 
-var debug = false
-
 func (c *Cabin) Ditdlamerde() {
 	c.ditdlamerde = true
 }
 
 func (c *Cabin) NextCommand() (ret string) {
-	c.trace("Start NEXT")
-	defer func() { c.trace("RETURN " + ret) }()
+	var cmd *command
+	c.trace("\nNEXT")
+	defer func() {
+		if c.debug {
+			s := "RETURN " + ret
+			if cmd != nil {
+				s += fmt.Sprintf(" cmd=%s", cmd)
+			}
+			c.trace(s)
+		}
+	}()
+
 	defer func() {
 		// remind the elevator direction
 		if ret == UP || ret == DOWN {
@@ -64,7 +88,7 @@ func (c *Cabin) NextCommand() (ret string) {
 		c.opened = false
 		return CLOSE
 	}
-	cmd := c.nextGo()
+	cmd = c.nextGo()
 	if cmd == nil {
 		cmd = c.nextCall()
 	}
@@ -108,6 +132,10 @@ func (c *Cabin) Go(floor int) {
 	}
 }
 
+func (c *Cabin) Debug(enabled bool) {
+	c.debug = enabled
+}
+
 func (c *Cabin) nextCall() *command {
 	if len(c.calls) == 0 {
 		return nil
@@ -141,7 +169,7 @@ func (c *Cabin) UserHasExited() {
 func NewCabin(lowerFloor, higherFloor, cabinSize int, d bool) *Cabin {
 	c := new(Cabin)
 	initCabin(c, lowerFloor, higherFloor, cabinSize)
-	debug = d
+	c.debug = d
 	return c
 }
 
@@ -154,7 +182,7 @@ func initCabin(c *Cabin, lowerFloor, higherFloor, cabinSize int) {
 	c.opened = false
 	c.cabinSize = cabinSize
 	c.crew = 0
-	c.trace("init")
+	c.trace("INIT")
 }
 
 func (c *Cabin) isFull() bool {
@@ -226,7 +254,7 @@ func (c *Cabin) shouldStopAtCurrentFloor(currentCmd *command) bool {
 			}
 			return c.calls[i].down && currentCmd.down
 		default:
-			fmt.Println("What to do here ?", c.calls[i], currentCmd, c.direction)
+			fmt.Printf("What to do here ?\ncall=%s\ncurrentcmd=%s\ncabin=%s\n", c.calls[i], currentCmd, c)
 		}
 	}
 	return false
@@ -263,7 +291,7 @@ func (c *Cabin) deleteCall(floor int) {
 }
 
 func (c *Cabin) trace(msg string) {
-	if debug {
-		fmt.Printf("%s:(%d/%d) opened=%t current=%d\nCALLS===%+v\nGOS===%+v\n\n", msg, c.lowerFloor, c.higherFloor, c.opened, c.currentFloor, c.calls, c.gos)
+	if c.debug {
+		fmt.Printf("%s:\n%s\n=================\n", msg, c)
 	}
 }
