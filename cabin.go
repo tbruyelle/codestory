@@ -254,7 +254,8 @@ func (c *Cabin) shouldStopAtCurrentFloor(currentCmd *command) bool {
 			}
 			return c.calls[i].down && currentCmd.down
 		default:
-			fmt.Printf("What to do here ?\ncall=%s\ncurrentcmd=%s\ncabin=%s\n", c.calls[i], currentCmd, c)
+			// the cabin is idle here, check match direction with current command
+			return c.calls[i].up && currentCmd.up || c.calls[i].down && currentCmd.down
 		}
 	}
 	return false

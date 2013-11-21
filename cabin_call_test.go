@@ -4,19 +4,6 @@ import (
 	"testing"
 )
 
-func TestSkipCallWhenCabinFull(t *testing.T) {
-	setup()
-	e.crew=e.cabinSize
-	e.Go(2)
-	e.Call(1, UP)
-
-	c := nextCommands(e)
-
-	assert(t, c, UP+UP+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
-	assertNoMoreCall(t, e)
-	assertNoMoreGo(t, e)
-}
-
 func TestCallDownAtMaxFloorStopAtCallUp(t *testing.T) {
 	setup()
 	e.Call(5, DOWN)
