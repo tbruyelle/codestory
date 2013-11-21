@@ -9,7 +9,7 @@ import (
 
 type Elevator interface {
 	NextCommand() string
-	Reset(lowerFloor, higherFloor int)
+	Reset(lowerFloor, higherFloor,cabinSize int)
 	Call(atFloor int, to string)
 	Go(floorToGo int)
 	UserHasEntered()
@@ -22,10 +22,11 @@ func main() {
 	debug := false
 	if len(os.Args) >= 2 {
 		debug = os.Args[1] == "-d"
-		if debug{
-		fmt.Println("Debug enabled")}
+		if debug {
+			fmt.Println("Debug enabled")
+		}
 	}
-	elevator = NewCabin(0, 5, debug)
+	elevator = NewCabin(0, 5, 50,debug)
 
 	http.HandleFunc("/", defaultHandler)
 	http.HandleFunc("/nextCommand", nextCommandHandler)
@@ -59,7 +60,12 @@ func resetHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		h = 5
 	}
-	elevator.Reset(l, h)
+	c, err := strconv.Atoi(r.FormValue("cabinSize"))
+	if err != nil {
+		fmt.Println(err)
+		c = 50
+	}
+	elevator.Reset(l, h, c)
 }
 
 func callHandler(w http.ResponseWriter, r *http.Request) {

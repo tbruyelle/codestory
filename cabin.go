@@ -16,6 +16,7 @@ type Cabin struct {
 	calls                                 []command
 	gos                                   []command
 	direction                             string
+	cabinSize                             int
 }
 
 const (
@@ -76,23 +77,23 @@ func (c *Cabin) shouldStopAtCurrentFloor(currentCmd *command) bool {
 		}
 		// check if current direction matches with call direction
 		switch c.direction {
-			case UP:
-				if currentCmd.floor == c.higherFloor {
-					// the destination is the higher floor,
-					// so stop if CALL UP
-					return c.calls[i].up
-				}
-				return c.calls[i].up && currentCmd.up
-			case DOWN:
-				if currentCmd.floor == c.lowerFloor {
-					// the destination is the lower floor,
-					// so stop if CALL down
-					return c.calls[i].down
-				}
-				return c.calls[i].down && currentCmd.down
-			default:
-				fmt.Println("What to do here ?", c.calls[i], currentCmd, c.direction)
+		case UP:
+			if currentCmd.floor == c.higherFloor {
+				// the destination is the higher floor,
+				// so stop if CALL UP
+				return c.calls[i].up
 			}
+			return c.calls[i].up && currentCmd.up
+		case DOWN:
+			if currentCmd.floor == c.lowerFloor {
+				// the destination is the lower floor,
+				// so stop if CALL down
+				return c.calls[i].down
+			}
+			return c.calls[i].down && currentCmd.down
+		default:
+			fmt.Println("What to do here ?", c.calls[i], currentCmd, c.direction)
+		}
 	}
 	return false
 }
@@ -165,8 +166,8 @@ func (c *Cabin) NextCommand() (ret string) {
 	return NOTHING
 }
 
-func (c *Cabin) Reset(lowerFloor, higherFloor int) {
-	initCabin(c, lowerFloor, higherFloor)
+func (c *Cabin) Reset(lowerFloor, higherFloor, cabinSize int) {
+	initCabin(c, lowerFloor, higherFloor, cabinSize)
 }
 
 func (c *Cabin) Call(floor int, dir string) {
@@ -218,19 +219,20 @@ func (c *Cabin) UserHasEntered() {
 func (c *Cabin) UserHasExited() {
 }
 
-func NewCabin(lowerFloor, higherFloor int, d bool) *Cabin {
+func NewCabin(lowerFloor, higherFloor, cabinSize int, d bool) *Cabin {
 	c := new(Cabin)
-	initCabin(c, lowerFloor, higherFloor)
+	initCabin(c, lowerFloor, higherFloor, cabinSize)
 	debug = d
 	return c
 }
 
-func initCabin(c *Cabin, lowerFloor, higherFloor int) {
+func initCabin(c *Cabin, lowerFloor, higherFloor, cabinSize int) {
 	c.lowerFloor = lowerFloor
 	c.currentFloor = 0
 	c.higherFloor = higherFloor
 	c.calls = make([]command, 0)
 	c.gos = make([]command, 0)
 	c.opened = false
+	c.cabinSize = cabinSize
 	c.trace("init")
 }

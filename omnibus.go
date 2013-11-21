@@ -27,7 +27,7 @@ func (o *Omnibus) NextCommand() string {
 	return commands[i]
 }
 
-func (o *Omnibus) Reset(l,h int) {
+func (o *Omnibus) Reset(l,h,c int) {
 	o.counter = 0
 }
 

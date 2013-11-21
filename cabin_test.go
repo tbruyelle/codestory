@@ -8,7 +8,7 @@ import (
 var e *Cabin
 
 func setup() {
-	e = NewCabin(0, 5, false)
+	e = NewCabin(0, 5, 10, false)
 }
 
 func assert(t *testing.T, value string, want string) {
@@ -92,7 +92,7 @@ func TestReset(t *testing.T) {
 	nextCommands(e)
 	e.opened = true
 
-	e.Reset(-1, 50)
+	e.Reset(-1, 50, 500)
 
 	assertFloor(t, e, 0)
 	if e.lowerFloor != -1 {
@@ -104,4 +104,6 @@ func TestReset(t *testing.T) {
 	assertNoMoreCall(t, e)
 	assertNoMoreGo(t, e)
 	assertDoorClosed(t, e)
+	if e.cabinSize!=500{
+	t.Errorf("bad cabinsize")}
 }
