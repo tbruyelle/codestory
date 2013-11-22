@@ -2,3 +2,4 @@
 - mettre un poids en fonction du nombre de call/go ?
 - remplacer direction par lastCommand et virer opened
 - mode over capacity?
+- si rien a faire retourner au milieu du building
