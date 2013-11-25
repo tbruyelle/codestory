@@ -20,14 +20,6 @@ type Elevator interface {
 
 var elevator Elevator
 
-func main() {
-	err := http.ListenAndServe(":8181", nil)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-}
-
 func init() {
 	debug := false
 	if len(os.Args) >= 2 {
