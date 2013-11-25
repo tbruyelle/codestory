@@ -1,4 +1,3 @@
-- choisir la commande GO la plus eloignee pour optimiser les aller-retours
 --- remplacer direction par lastCommand et virer opened
 - mode over capacity?
 - si rien a faire retourner au milieu du building

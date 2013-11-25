@@ -4,6 +4,66 @@ import (
 	"testing"
 )
 
+func TestNextGoUpChooseFarestFloor(t *testing.T) {
+	setup()
+	e.Go(1)
+	e.Go(3)
+	e.Go(5)
+
+	c := e.nextGo()
+
+	if c.floor != 5 {
+		t.Errorf("incorrect next GO, expected floor 5 but was floor %d", c.floor)
+	}
+}
+
+func TestNextGoDownChooseFarestFloor(t *testing.T) {
+	setup()
+	e.currentFloor = 5
+	e.Go(4)
+	e.Go(3)
+	e.Go(1)
+
+	c := e.nextGo()
+
+	if c.floor != 1 {
+		t.Errorf("incorrect next GO, expected floor 1 but was floor %d", c.floor)
+	}
+}
+
+func TestNextGoUpDownChooseFarestFloor(t *testing.T) {
+	setup()
+	e.higherFloor = 20
+	e.currentFloor = 10
+	e.Go(11)
+	e.Go(3)
+	e.Go(1)
+	e.Go(19)
+
+	c := e.nextGo()
+
+	if c.floor != 19 {
+		t.Errorf("incorrect next GO, expected floor 19 but was floor %d", c.floor)
+	}
+}
+
+func TestNextGoDownUpChooseFarestFloor(t *testing.T) {
+	setup()
+	e.higherFloor = 20
+	e.currentFloor = 10
+	e.Go(9)
+	e.Go(3)
+	e.Go(1)
+	e.Go(19)
+
+	c := e.nextGo()
+
+	if c.floor != 1 {
+		t.Errorf("incorrect next GO, expected floor 1 but was floor %d", c.floor)
+	}
+}
+
+
 func TestGosSameFloor(t *testing.T) {
 	setup()
 

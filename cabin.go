@@ -153,7 +153,32 @@ func (c *Cabin) nextGo() *command {
 	if len(c.gos) == 0 {
 		return nil
 	}
-	return &c.gos[0]
+	// take first to have a direction
+	cmd := c.gos[0]
+	maxdiff, ind := 0, 0
+	for i := 0; i < len(c.gos); i++ {
+		if !sameDir(cmd, c.gos[i]) {
+			continue
+		}
+		diff := floorDiff(c.gos[i].floor, c.currentFloor)
+		if diff > maxdiff {
+			maxdiff = diff
+			ind = i
+		}
+	}
+	return &c.gos[ind]
+}
+
+func floorDiff(f1, f2 int) int {
+	diff := f1 - f2
+	if diff < 0 {
+		diff = -diff
+	}
+	return diff
+}
+
+func sameDir(cmd1, cmd2 command) bool {
+	return cmd1.up && cmd2.up || cmd1.down && cmd2.down
 }
 
 func (c *Cabin) UserHasEntered() {
@@ -239,11 +264,11 @@ func (c *Cabin) shouldStopAtCurrentFloor(currentCmd *command) bool {
 	}
 	i := findFloor(c.calls, c.currentFloor)
 	if i < len(c.calls) {
+		// found a call for current floor
 		if c.calls[i].count+c.crew > c.cabinSize {
 			// cabin will be full dont stop
 			return false
 		}
-		// found a call for current floor
 		if currentCmd == nil {
 			return true
 		}
@@ -265,7 +290,7 @@ func (c *Cabin) shouldStopAtCurrentFloor(currentCmd *command) bool {
 			return c.calls[i].down && currentCmd.down
 		default:
 			// the cabin is idle here, check match direction with current command
-			return c.calls[i].up && currentCmd.up || c.calls[i].down && currentCmd.down
+			return sameDir(c.calls[i], *currentCmd)
 		}
 	}
 	return false
