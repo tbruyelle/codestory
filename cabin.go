@@ -107,8 +107,8 @@ func (c *Cabin) Reset(lowerFloor, higherFloor, cabinSize int, cause string) {
 func (c *Cabin) Call(floor int, dir string) {
 	i := findFloor(c.calls, floor)
 	if i < len(c.calls) {
-		c.calls[i].up = c.calls[i].up||dir==UP
-		c.calls[i].down = c.calls[i].down||dir==DOWN
+		c.calls[i].up = c.calls[i].up || dir == UP
+		c.calls[i].down = c.calls[i].down || dir == DOWN
 		c.calls[i].count++
 	} else {
 		c.calls = append(c.calls,
@@ -239,6 +239,10 @@ func (c *Cabin) shouldStopAtCurrentFloor(currentCmd *command) bool {
 	}
 	i := findFloor(c.calls, c.currentFloor)
 	if i < len(c.calls) {
+		if c.calls[i].count+c.crew > c.cabinSize {
+			// cabin will be full dont stop
+			return false
+		}
 		// found a call for current floor
 		if currentCmd == nil {
 			return true
