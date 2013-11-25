@@ -8,6 +8,7 @@ type command struct {
 	name     byte
 	floor    int
 	up, down bool
+	count    int
 }
 
 func (c command) String() string {
@@ -17,7 +18,7 @@ func (c command) String() string {
 	} else {
 		s = "GO"
 	}
-	return fmt.Sprintf("(%s floor=%d up=%t down=%t)", s, c.floor, c.up, c.down)
+	return fmt.Sprintf("(%s floor=%d up=%t down=%t count=%d)", s, c.floor, c.up, c.down, c.count)
 }
 
 type Cabin struct {
@@ -104,11 +105,11 @@ func (c *Cabin) Reset(lowerFloor, higherFloor, cabinSize int, cause string) {
 }
 
 func (c *Cabin) Call(floor int, dir string) {
-	ind := findFloor(c.calls, floor)
-	if ind < len(c.calls) {
-		call := c.calls[ind]
-		call.up = true
-		call.down = true
+	i := findFloor(c.calls, floor)
+	if i < len(c.calls) {
+		c.calls[i].up = c.calls[i].up||dir==UP
+		c.calls[i].down = c.calls[i].down||dir==DOWN
+		c.calls[i].count++
 	} else {
 		c.calls = append(c.calls,
 			command{
@@ -116,18 +117,23 @@ func (c *Cabin) Call(floor int, dir string) {
 				floor: floor,
 				up:    dir == UP,
 				down:  dir == DOWN,
+				count: 1,
 			})
 	}
 }
 
 func (c *Cabin) Go(floor int) {
-	if !hasFloor(c.gos, floor) {
+	i := findFloor(c.gos, floor)
+	if i < len(c.gos) {
+		c.gos[i].count++
+	} else {
 		c.gos = append(c.gos,
 			command{
 				name:  CMD_GO,
 				floor: floor,
 				up:    floor > c.currentFloor,
 				down:  floor < c.currentFloor,
+				count: 1,
 			})
 	}
 }

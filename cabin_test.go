@@ -199,3 +199,32 @@ func TestDebugDisabled(t *testing.T) {
 		t.Errorf("debug should be disabled")
 	}
 }
+
+func TestCommandCount(t *testing.T) {
+	setup()
+
+	e.Call(1, UP)
+	e.Call(1, DOWN)
+	e.Call(1, DOWN)
+	e.Call(2, UP)
+	e.Go(1)
+	e.Go(3)
+	e.Go(3)
+	e.Go(3)
+	e.Go(3)
+
+	assertNbCall(t, e, 2)
+	if e.calls[0].count != 3 {
+		t.Errorf("Inccorrect call count, expected 3 but was %d", e.calls[0].count)
+	}
+	if e.calls[1].count != 1 {
+		t.Errorf("Inccorrect call count, expected 1 but was %d", e.calls[1].count)
+	}
+	assertNbGo(t, e, 2)
+	if e.gos[0].count != 1 {
+		t.Errorf("Inccorrect go count, expected 1 but was %d", e.gos[0].count)
+	}
+	if e.gos[1].count != 4 {
+		t.Errorf("Inccorrect go count, expected 4 but was %d", e.gos[1].count)
+	}
+}

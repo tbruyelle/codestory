@@ -4,6 +4,27 @@ import (
 	"testing"
 )
 
+func TestCallDirection(t *testing.T) {
+	setup()
+
+	e.Call(1, UP)
+	e.Call(1, UP)
+	e.Call(2, UP)
+	e.Call(2, DOWN)
+	e.Call(3, DOWN)
+	e.Call(3, DOWN)
+
+	if !e.calls[0].up || e.calls[0].down {
+		t.Errorf("incorrect direction, should up=true, down=false but was up=%t, down=%t", e.calls[0].up, e.calls[0].down)
+	}
+	if !e.calls[1].up || !e.calls[1].down {
+		t.Errorf("incorrect direction, should up=true, down=true but was up=%t, down=%t", e.calls[1].up, e.calls[1].down)
+	}
+	if e.calls[2].up || !e.calls[2].down {
+		t.Errorf("incorrect direction, should up=false, down=true but was up=%t, down=%t", e.calls[2].up, e.calls[2].down)
+	}
+}
+
 func TestCallDownAtMaxFloorStopAtCallUp(t *testing.T) {
 	setup()
 	e.Call(5, DOWN)
