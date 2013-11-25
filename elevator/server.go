@@ -18,7 +18,18 @@ type Elevator interface {
 	Debug(enable bool)
 }
 
-var elevator Elevator
+type Elevators interface {
+	NextCommands() []string
+	Reset(lowerFloor, higherFloor, cabineSize, cabinCaount int, cause string)
+	Call(atFloor int, to string)
+	Go(floorToGo, cabin int)
+	UserHasEntered(cabin int)
+	UserHasExited(cabin int)
+	Ditdlamerde()
+	Debug(enable bool)
+}
+
+var elevators Elevators
 
 func init() {
 	debug := false
@@ -28,10 +39,11 @@ func init() {
 			fmt.Println("Debug enabled")
 		}
 	}
-	elevator = NewCabin(0, 5, 50, debug)
+	elevators = NewCabins(0, 5, 50, 2, debug)
 
 	http.HandleFunc("/", defaultHandler)
-	http.HandleFunc("/nextCommand", nextCommandHandler)
+	//http.HandleFunc("/nextCommand", nextCommandHandler)
+	http.HandleFunc("/nextCommands", nextCommandsHandler)
 	http.HandleFunc("/reset", resetHandler)
 	http.HandleFunc("/call", callHandler)
 	http.HandleFunc("/go", goHandler)
@@ -44,8 +56,11 @@ func init() {
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
 }
 
-func nextCommandHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, elevator.NextCommand())
+func nextCommandsHandler(w http.ResponseWriter, r *http.Request) {
+	cs := elevators.NextCommands()
+	for _, c := range cs {
+		fmt.Fprintln(w, c)
+	}
 }
 
 func resetHandler(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +79,12 @@ func resetHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		c = 50
 	}
-	elevator.Reset(l, h, c, r.FormValue("cause"))
+	cc, err := strconv.Atoi(r.FormValue("cabinCount"))
+	if err != nil {
+		fmt.Println(err)
+		cc = 2
+	}
+	elevators.Reset(l, h, c, cc, r.FormValue("cause"))
 }
 
 func callHandler(w http.ResponseWriter, r *http.Request) {
@@ -73,7 +93,7 @@ func callHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	elevator.Call(atFloor, r.FormValue("to"))
+	elevators.Call(atFloor, r.FormValue("to"))
 }
 
 func goHandler(w http.ResponseWriter, r *http.Request) {
@@ -82,21 +102,38 @@ func goHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	elevator.Go(floorToGo)
+	cabin, err := strconv.Atoi(r.FormValue("cabin"))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	elevators.Go(floorToGo, cabin)
 }
 
 func userHasEnteredHandler(w http.ResponseWriter, r *http.Request) {
-	elevator.UserHasEntered()
+	cabin, err := strconv.Atoi(r.FormValue("cabin"))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	elevators.UserHasEntered(cabin)
 }
 
 func userHasExitedHandler(w http.ResponseWriter, r *http.Request) {
-	elevator.UserHasExited()
+	cabin, err := strconv.Atoi(r.FormValue("cabin"))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	elevators.UserHasExited(cabin)
 }
 
 func shitHandler(w http.ResponseWriter, r *http.Request) {
-	elevator.Ditdlamerde()
+	elevators.Ditdlamerde()
 }
 
 func debugHandler(w http.ResponseWriter, r *http.Request) {
-	elevator.Debug(r.FormValue("enabled") == "true")
+	elevators.Debug(r.FormValue("enabled") == "true")
 }

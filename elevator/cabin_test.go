@@ -29,6 +29,13 @@ func assert(t *testing.T, value string, want string) {
 	}
 }
 
+func assertInt(t *testing.T, value int, want int) {
+	if value != want {
+		t.Errorf("expected %d but was %d", want, value)
+	}
+}
+
+
 func assertCrew(t *testing.T, e *Cabin, crew int) {
 	if e.crew != crew {
 		t.Errorf("expected crew %d but was %d", crew, e.crew)
