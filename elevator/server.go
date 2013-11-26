@@ -2,6 +2,7 @@ package elevator
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -36,7 +37,7 @@ func init() {
 	if len(os.Args) >= 2 {
 		debug = os.Args[1] == "-d"
 		if debug {
-			fmt.Println("Debug enabled")
+			log.Println("Debug enabled")
 		}
 	}
 	elevators = NewCabins(0, 5, 50, 2, debug)
@@ -66,22 +67,22 @@ func nextCommandsHandler(w http.ResponseWriter, r *http.Request) {
 func resetHandler(w http.ResponseWriter, r *http.Request) {
 	l, err := strconv.Atoi(r.FormValue("lowerFloor"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		l = 0
 	}
 	h, err := strconv.Atoi(r.FormValue("higherFloor"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		h = 5
 	}
 	c, err := strconv.Atoi(r.FormValue("cabinSize"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		c = 50
 	}
 	cc, err := strconv.Atoi(r.FormValue("cabinCount"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		cc = 2
 	}
 	elevators.Reset(l, h, c, cc, r.FormValue("cause"))
@@ -90,7 +91,7 @@ func resetHandler(w http.ResponseWriter, r *http.Request) {
 func callHandler(w http.ResponseWriter, r *http.Request) {
 	atFloor, err := strconv.Atoi(r.FormValue("atFloor"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 	elevators.Call(atFloor, r.FormValue("to"))
@@ -99,12 +100,12 @@ func callHandler(w http.ResponseWriter, r *http.Request) {
 func goHandler(w http.ResponseWriter, r *http.Request) {
 	floorToGo, err := strconv.Atoi(r.FormValue("floorToGo"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 	cabin, err := strconv.Atoi(r.FormValue("cabin"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
@@ -114,7 +115,7 @@ func goHandler(w http.ResponseWriter, r *http.Request) {
 func userHasEnteredHandler(w http.ResponseWriter, r *http.Request) {
 	cabin, err := strconv.Atoi(r.FormValue("cabin"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
@@ -124,7 +125,7 @@ func userHasEnteredHandler(w http.ResponseWriter, r *http.Request) {
 func userHasExitedHandler(w http.ResponseWriter, r *http.Request) {
 	cabin, err := strconv.Atoi(r.FormValue("cabin"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 	elevators.UserHasExited(cabin)

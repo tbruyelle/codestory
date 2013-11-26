@@ -1,7 +1,7 @@
 package elevator
 
 import (
-	"fmt"
+	"log"
 	"time"
 )
 
@@ -67,7 +67,7 @@ func (c *Cabins) Go(floorToGo, cabin int) {
 }
 
 func (c *Cabins) Reset(lowerFloor, higherFloor, cabinSize, cabinCount int, cause string) {
-	fmt.Printf("%s ---> Reset requested %d/%d/%d/%d msg=%s\n", time.Now(), lowerFloor, higherFloor, cabinSize, cabinCount, cause)
+	log.Printf("%s ---> Reset requested %d/%d/%d/%d msg=%s\n", time.Now(), lowerFloor, higherFloor, cabinSize, cabinCount, cause)
 	initCabins(c, lowerFloor, higherFloor, cabinSize, cabinCount, false)
 }
 

@@ -1,8 +1,8 @@
 package main
 
 import (
+	_ "./elevator"
 	"fmt"
-	_ "codestory/elevator"
 	"net/http"
 	"os"
 )

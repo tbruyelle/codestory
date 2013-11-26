@@ -2,6 +2,7 @@ package elevator
 
 import (
 	"fmt"
+	"log"
 	"time"
 )
 
@@ -101,7 +102,7 @@ func (c *Cabin) NextCommand() (ret string) {
 }
 
 func (c *Cabin) Reset(lowerFloor, higherFloor, cabinSize int, cause string) {
-	fmt.Printf("%s ---> Reset requested %d/%d/%d msg=%s\n", time.Now(), lowerFloor, higherFloor, cabinSize, cause)
+	log.Printf("%s ---> Reset requested %d/%d/%d msg=%s\n", time.Now(), lowerFloor, higherFloor, cabinSize, cause)
 	initCabin(c, lowerFloor, higherFloor, cabinSize)
 }
 
@@ -184,7 +185,7 @@ func sameDir(cmd1, cmd2 command) bool {
 
 func (c *Cabin) UserHasEntered() {
 	if c.crew >= c.cabinSize {
-		fmt.Println(time.Now(), "OUps cabin size exceeded !")
+		log.Println("OUps cabin size exceeded !")
 		return
 	}
 	c.crew++
@@ -192,7 +193,7 @@ func (c *Cabin) UserHasEntered() {
 
 func (c *Cabin) UserHasExited() {
 	if c.crew <= 0 {
-		fmt.Println(time.Now(), "OUps cabin is empty")
+		log.Println("OUps cabin is empty")
 		return
 	}
 	c.crew--
@@ -329,6 +330,6 @@ func (c *Cabin) deleteCall(floor int) {
 
 func (c *Cabin) trace(msg string) {
 	if c.debug {
-		fmt.Printf("%s | %s:\n%s\n=================\n", time.Now(), msg, c)
+		log.Printf("%s:\n%s\n=================\n", msg, c)
 	}
 }
