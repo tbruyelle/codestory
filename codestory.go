@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	_ "misc/codestory/elevator"
+	_ "codestory/elevator"
 	"net/http"
 	"os"
 )
