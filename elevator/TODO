@@ -1,3 +1,4 @@
 --- remplacer direction par lastCommand et virer opened
 - mode over capacity?
 - si rien a faire retourner au milieu du building
+- envoyer en priorite l'ascenseur idle
