@@ -1,11 +1,12 @@
 package elevator
 
+import "strings"
 import "testing"
 
 var cs *Cabins
 
 func setupCs() {
-	cs = NewCabins(0, 5, 10, 2, false)
+	cs = NewCabins(0, 20, 10, 2, false)
 }
 
 func TestCabinsNextCommands(t *testing.T) {
@@ -54,16 +55,83 @@ func TestCabinsUserHasExited(t *testing.T) {
 	assertInt(t, cs.cabs[1].crew, 1)
 }
 
-func TestCabinsCallNearestCabin(t *testing.T) {
+func TestCabinsCallNearestIdleCabin(t *testing.T) {
 	setupCs()
 	cs.cabs[0].currentFloor = 5
 	cs.cabs[1].currentFloor = 3
 
 	cs.Call(0, UP)
-	c := cs.NextCommands()
+	c := nextCommandss(cs)
 
 	assert(t, c[0], NOTHING)
-	assert(t, c[1], DOWN)
+	assert(t, c[1], DOWN+DOWN+DOWN+OPEN+CLOSE+NOTHING)
+}
+
+func TestCabinsCallSameDistanceChooseFirstIdleCabin(t *testing.T) {
+	setupCs()
+	cs.cabs[0].currentFloor = 3
+	cs.cabs[1].currentFloor = 1
+
+	cs.Call(2, UP)
+	c := nextCommandss(cs)
+
+	assert(t, c[0], DOWN+OPEN+CLOSE+NOTHING)
+	assert(t, c[1], NOTHING)
+}
+
+func TestCabinsCallChooseFirstCabinNoSameDirection(t *testing.T) {
+	setupCs()
+	cs.cabs[0].currentFloor = 3
+	cs.Go(4, 0) // first cab goes up
+	cs.cabs[1].currentFloor = 1
+	cs.Go(0, 1) // second cab goes down
+	tmp:=cs.NextCommands() // start moving
+
+	cs.Call(2, UP)
+	c := nextCommandss(cs)
+	c[0]=tmp[0]+c[0]
+	c[1]=tmp[1]+c[1]
+
+	assert(t, c[0], UP+OPEN+CLOSE+DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assert(t, c[1], DOWN+OPEN+CLOSE+NOTHING)
+}
+
+func TestCabinsCallChooseCabinSameDirectionUp(t *testing.T) {
+	setupCs()
+	cs.cabs[0].currentFloor = 12
+	cs.Go(10, 0) // give a down direction to cabin 0
+	cs.cabs[1].currentFloor = 9
+	cs.Go(14, 1) // give a up direction to cabin 1
+	tmp:=cs.NextCommands() // start moving
+
+	cs.Call(15, UP)
+	c := nextCommandss(cs)
+	c[0]=tmp[0]+c[0]
+	c[1]=tmp[1]+c[1]
+
+
+	assert(t, c[0], DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assert(t, c[1], UP+UP+UP+UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
+}
+
+func nextCommandss(cs *Cabins) []string {
+	cmds := make([]string, 2)
+	for i := 0; i < 100; i++ {
+		cmd := cs.NextCommands()
+		doBreak := true
+		if cmd[0] != NOTHING || !strings.HasSuffix(cmds[0], NOTHING) {
+			doBreak = false
+			cmds[0] += cmd[0]
+		}
+		if cmd[1] != NOTHING || !strings.HasSuffix(cmds[1], NOTHING) {
+			doBreak = false
+			cmds[1] += cmd[1]
+		}
+		if doBreak {
+			break
+		}
+	}
+	return cmds
 }
 
 //func newMockCabin(id, l, h, c, cc int) *Cabin {

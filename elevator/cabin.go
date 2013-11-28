@@ -39,6 +39,20 @@ func (c *Cabin) String() string {
 		c.lowerFloor, c.higherFloor, c.currentFloor, c.gos, c.calls)
 }
 
+func (c *Cabin) IsIdle() bool {
+	return c.direction != UP && c.direction != DOWN && c.crew == 0
+}
+
+func (c *Cabin) MatchDirection(floor int) bool {
+	if c.currentFloor == floor {
+		return true
+	}
+	if c.currentFloor < floor {
+		return c.direction== UP
+	}
+		return c.direction== DOWN
+}
+
 const (
 	OPEN     = "OPEN"
 	CLOSE    = "CLOSE"

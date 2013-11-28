@@ -48,15 +48,27 @@ func (c *Cabins) NextCommands() []string {
 }
 
 func (c *Cabins) Call(atFloor int, to string) {
-	// Determine the nearest elevator
-	cabin := 0
+	// Determine the nearest idle elevator
+	cabin := -1
 	maxFloor := c.higherFloor - c.lowerFloor
-	for i:=0;i<len(c.cabs);i++ {
+	for i := 0; i < len(c.cabs); i++ {
 		diff := floorDiff(c.cabs[i].currentFloor, atFloor)
-		if diff < maxFloor {
+		if diff < maxFloor && c.cabs[i].IsIdle() {
 			maxFloor = diff
 			cabin = i
 		}
+	}
+	if cabin == -1 {
+		// if no idle cabin, found the one in the same direction
+		for i := 0; i < len(c.cabs); i++ {
+			if c.cabs[i].MatchDirection(atFloor) {
+				cabin = i
+			}
+		}
+	}
+	if cabin == -1 {
+		//if not match choose the first cabin
+		cabin = 0
 	}
 	// call the nearest
 	c.cabs[cabin].Call(atFloor, to)

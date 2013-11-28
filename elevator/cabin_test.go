@@ -35,7 +35,6 @@ func assertInt(t *testing.T, value int, want int) {
 	}
 }
 
-
 func assertCrew(t *testing.T, e *Cabin, crew int) {
 	if e.crew != crew {
 		t.Errorf("expected crew %d but was %d", crew, e.crew)
@@ -233,5 +232,85 @@ func TestCommandCount(t *testing.T) {
 	}
 	if e.gos[1].count != 4 {
 		t.Errorf("Inccorrect go count, expected 4 but was %d", e.gos[1].count)
+	}
+}
+
+func TestIsIdle(t *testing.T) {
+	setup()
+
+	b := e.IsIdle()
+
+	if !b {
+		t.Errorf("Cabin should be idle")
+	}
+}
+
+func TestCallIsNotIdle(t *testing.T) {
+	setup()
+	e.Call(1, UP)
+	e.NextCommand()
+
+	b := e.IsIdle()
+
+	if b {
+		t.Errorf("Cabin shouldn't be idle")
+	}
+}
+
+func TestGoIsNotIdle(t *testing.T) {
+	setup()
+	e.Go(1)
+	e.NextCommand()
+
+	b := e.IsIdle()
+
+	if b {
+		t.Errorf("Cabin shouldn't be idle")
+	}
+}
+
+func TestNotEmptyNotIdle(t *testing.T) {
+	setup()
+	e.crew = 1
+
+	b := e.IsIdle()
+
+	if b {
+		t.Errorf("Cabin shouldn't be idle")
+	}
+}
+
+func TestMatchDirectionSameFloor(t *testing.T) {
+	setup()
+
+	b := e.MatchDirection(0)
+
+	if !b {
+		t.Errorf("Should match direction if same floor")
+	}
+}
+
+func TestMatchDirectionSameDirectionUp(t *testing.T) {
+	setup()
+	e.Go(1)
+	e.NextCommand()
+
+	b := e.MatchDirection(2)
+
+	if !b {
+		t.Errorf("Should match direction if same direction")
+	}
+}
+
+func TestMatchDirectionSameDirectionDown(t *testing.T) {
+	setup()
+	e.currentFloor=5
+	e.Go(1)
+	e.NextCommand()
+
+	b := e.MatchDirection(2)
+
+	if !b {
+		t.Errorf("Should match direction if same direction")
 	}
 }
