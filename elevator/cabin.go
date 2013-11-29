@@ -8,9 +8,9 @@ import (
 
 type command struct {
 	name     byte
-	floor    int
-	up, down bool
-	count    int
+	Floor    int
+	Up, Down bool
+	Count    int
 }
 
 func (c command) String() string {
@@ -20,37 +20,37 @@ func (c command) String() string {
 	} else {
 		s = "GO"
 	}
-	return fmt.Sprintf("(%s floor=%d up=%t down=%t count=%d)", s, c.floor, c.up, c.down, c.count)
+	return fmt.Sprintf("(%s floor=%d up=%t down=%t count=%d)", s, c.Floor, c.Up, c.Down, c.Count)
 }
 
 type Cabin struct {
-	lowerFloor, higherFloor, currentFloor int
-	opened                                bool
-	calls                                 []command
-	gos                                   []command
-	direction                             string
-	cabinSize, crew                       int
+	lowerFloor, higherFloor, CurrentFloor int
+	Opened                                bool
+	Calls                                 []command
+	Gos                                   []command
+	Direction                             string
+	CabinSize, Crew                       int
 	debug, ditdlamerde                    bool
 }
 
 func (c *Cabin) String() string {
 	return fmt.Sprintf("open=%t direction=%s crew=%d/%d (%d/%d) -- floor=%d\ngos=%s\ncalls=%s",
-		c.opened, c.direction, c.crew, c.cabinSize,
-		c.lowerFloor, c.higherFloor, c.currentFloor, c.gos, c.calls)
+		c.Opened, c.Direction, c.Crew, c.CabinSize,
+		c.lowerFloor, c.higherFloor, c.CurrentFloor, c.Gos, c.Calls)
 }
 
 func (c *Cabin) IsIdle() bool {
-	return c.direction != UP && c.direction != DOWN && c.crew == 0
+	return c.Direction != UP && c.Direction != DOWN && c.Crew == 0
 }
 
 func (c *Cabin) MatchDirection(floor int) bool {
-	if c.currentFloor == floor {
+	if c.CurrentFloor == floor {
 		return true
 	}
-	if c.currentFloor < floor {
-		return c.direction== UP
+	if c.CurrentFloor < floor {
+		return c.Direction == UP
 	}
-		return c.direction== DOWN
+	return c.Direction == DOWN
 }
 
 const (
@@ -84,9 +84,9 @@ func (c *Cabin) NextCommand() (ret string) {
 	defer func() {
 		// remind the elevator direction
 		if ret == UP || ret == DOWN {
-			c.direction = ret
+			c.Direction = ret
 		} else {
-			c.direction = NOTHING
+			c.Direction = NOTHING
 		}
 	}()
 
@@ -95,14 +95,14 @@ func (c *Cabin) NextCommand() (ret string) {
 		return POOP
 	}
 
-	if c.opened {
+	if c.Opened {
 		// before close check is theres a command for currentFloor
 		if c.shouldStopAtCurrentFloor(nil) {
 			// command for current floor, keep the door opened
-			c.floorProcessed(c.currentFloor)
+			c.floorProcessed(c.CurrentFloor)
 			return NOTHING
 		}
-		c.opened = false
+		c.Opened = false
 		return CLOSE
 	}
 	cmd = c.nextGo()
@@ -121,35 +121,35 @@ func (c *Cabin) Reset(lowerFloor, higherFloor, cabinSize int, cause string) {
 }
 
 func (c *Cabin) Call(floor int, dir string) {
-	i := findFloor(c.calls, floor)
-	if i < len(c.calls) {
-		c.calls[i].up = c.calls[i].up || dir == UP
-		c.calls[i].down = c.calls[i].down || dir == DOWN
-		c.calls[i].count++
+	i := findFloor(c.Calls, floor)
+	if i < len(c.Calls) {
+		c.Calls[i].Up = c.Calls[i].Up || dir == UP
+		c.Calls[i].Down = c.Calls[i].Down || dir == DOWN
+		c.Calls[i].Count++
 	} else {
-		c.calls = append(c.calls,
+		c.Calls = append(c.Calls,
 			command{
 				name:  CMD_CALL,
-				floor: floor,
-				up:    dir == UP,
-				down:  dir == DOWN,
-				count: 1,
+				Floor: floor,
+				Up:    dir == UP,
+				Down:  dir == DOWN,
+				Count: 1,
 			})
 	}
 }
 
 func (c *Cabin) Go(floor int) {
-	i := findFloor(c.gos, floor)
-	if i < len(c.gos) {
-		c.gos[i].count++
+	i := findFloor(c.Gos, floor)
+	if i < len(c.Gos) {
+		c.Gos[i].Count++
 	} else {
-		c.gos = append(c.gos,
+		c.Gos = append(c.Gos,
 			command{
 				name:  CMD_GO,
-				floor: floor,
-				up:    floor > c.currentFloor,
-				down:  floor < c.currentFloor,
-				count: 1,
+				Floor: floor,
+				Up:    floor > c.CurrentFloor,
+				Down:  floor < c.CurrentFloor,
+				Count: 1,
 			})
 	}
 }
@@ -159,30 +159,30 @@ func (c *Cabin) Debug(enabled bool) {
 }
 
 func (c *Cabin) nextCall() *command {
-	if len(c.calls) == 0 {
+	if len(c.Calls) == 0 {
 		return nil
 	}
-	return &c.calls[0]
+	return &c.Calls[0]
 }
 
 func (c *Cabin) nextGo() *command {
-	if len(c.gos) == 0 {
+	if len(c.Gos) == 0 {
 		return nil
 	}
 	// take first to have a direction
-	cmd := c.gos[0]
+	cmd := c.Gos[0]
 	maxdiff, ind := 0, 0
-	for i := 0; i < len(c.gos); i++ {
-		if !sameDir(cmd, c.gos[i]) {
+	for i := 0; i < len(c.Gos); i++ {
+		if !sameDir(cmd, c.Gos[i]) {
 			continue
 		}
-		diff := floorDiff(c.gos[i].floor, c.currentFloor)
+		diff := floorDiff(c.Gos[i].Floor, c.CurrentFloor)
 		if diff > maxdiff {
 			maxdiff = diff
 			ind = i
 		}
 	}
-	return &c.gos[ind]
+	return &c.Gos[ind]
 }
 
 func floorDiff(f1, f2 int) int {
@@ -194,23 +194,23 @@ func floorDiff(f1, f2 int) int {
 }
 
 func sameDir(cmd1, cmd2 command) bool {
-	return cmd1.up && cmd2.up || cmd1.down && cmd2.down
+	return cmd1.Up && cmd2.Up || cmd1.Down && cmd2.Down
 }
 
 func (c *Cabin) UserHasEntered() {
-	if c.crew >= c.cabinSize {
+	if c.Crew >= c.CabinSize {
 		log.Println("OUps cabin size exceeded !")
 		return
 	}
-	c.crew++
+	c.Crew++
 }
 
 func (c *Cabin) UserHasExited() {
-	if c.crew <= 0 {
+	if c.Crew <= 0 {
 		log.Println("OUps cabin is empty")
 		return
 	}
-	c.crew--
+	c.Crew--
 }
 
 func NewCabin(lowerFloor, higherFloor, cabinSize int, d bool) *Cabin {
@@ -222,40 +222,40 @@ func NewCabin(lowerFloor, higherFloor, cabinSize int, d bool) *Cabin {
 
 func initCabin(c *Cabin, lowerFloor, higherFloor, cabinSize int) {
 	c.lowerFloor = lowerFloor
-	c.currentFloor = 0
+	c.CurrentFloor = 0
 	c.higherFloor = higherFloor
-	c.calls = make([]command, 0)
-	c.gos = make([]command, 0)
-	c.opened = false
-	c.cabinSize = cabinSize
-	c.crew = 0
+	c.Calls = make([]command, 0)
+	c.Gos = make([]command, 0)
+	c.Opened = false
+	c.CabinSize = cabinSize
+	c.Crew = 0
 	c.trace("INIT")
 }
 
 func (c *Cabin) isFull() bool {
-	return c.crew >= c.cabinSize
+	return c.Crew >= c.CabinSize
 }
 
 func (c *Cabin) processCommand(cmd *command) string {
-	if cmd.floor < c.lowerFloor || cmd.floor > c.higherFloor {
-		c.floorProcessed(cmd.floor)
+	if cmd.Floor < c.lowerFloor || cmd.Floor > c.higherFloor {
+		c.floorProcessed(cmd.Floor)
 		return NOTHING
 	}
-	if cmd.floor > c.currentFloor {
+	if cmd.Floor > c.CurrentFloor {
 		if c.shouldStopAtCurrentFloor(cmd) {
 			return c.processCmdCurrentFloor()
 		}
-		c.currentFloor++
+		c.CurrentFloor++
 		return UP
 	}
-	if cmd.floor < c.currentFloor {
+	if cmd.Floor < c.CurrentFloor {
 		if c.shouldStopAtCurrentFloor(cmd) {
 			return c.processCmdCurrentFloor()
 		}
-		c.currentFloor--
+		c.CurrentFloor--
 		return DOWN
 	}
-	// floor == c.currentFloor
+	// floor == c.CurrentFloor
 	return c.processCmdCurrentFloor()
 }
 
@@ -265,23 +265,23 @@ func (c *Cabin) floorProcessed(floor int) {
 }
 
 func (c *Cabin) processCmdCurrentFloor() string {
-	c.opened = true
-	c.floorProcessed(c.currentFloor)
+	c.Opened = true
+	c.floorProcessed(c.CurrentFloor)
 	return OPEN
 }
 
 func (c *Cabin) shouldStopAtCurrentFloor(currentCmd *command) bool {
-	if hasFloor(c.gos, c.currentFloor) {
+	if hasFloor(c.Gos, c.CurrentFloor) {
 		return true
 	}
 	if c.isFull() {
 		// never stop if cabin is full
 		return false
 	}
-	i := findFloor(c.calls, c.currentFloor)
-	if i < len(c.calls) {
+	i := findFloor(c.Calls, c.CurrentFloor)
+	if i < len(c.Calls) {
 		// found a call for current floor
-		if c.calls[i].count+c.crew > c.cabinSize {
+		if c.Calls[i].Count+c.Crew > c.CabinSize {
 			// cabin will be full dont stop
 			return false
 		}
@@ -289,24 +289,24 @@ func (c *Cabin) shouldStopAtCurrentFloor(currentCmd *command) bool {
 			return true
 		}
 		// check if current direction matches with call direction
-		switch c.direction {
+		switch c.Direction {
 		case UP:
-			if currentCmd.floor == c.higherFloor {
+			if currentCmd.Floor == c.higherFloor {
 				// the destination is the higher floor,
 				// so stop if CALL UP
-				return c.calls[i].up
+				return c.Calls[i].Up
 			}
-			return c.calls[i].up && currentCmd.up
+			return c.Calls[i].Up && currentCmd.Up
 		case DOWN:
-			if currentCmd.floor == c.lowerFloor {
+			if currentCmd.Floor == c.lowerFloor {
 				// the destination is the lower floor,
 				// so stop if CALL down
-				return c.calls[i].down
+				return c.Calls[i].Down
 			}
-			return c.calls[i].down && currentCmd.down
+			return c.Calls[i].Down && currentCmd.Down
 		default:
 			// the cabin is idle here, check match direction with current command
-			return sameDir(c.calls[i], *currentCmd)
+			return sameDir(c.Calls[i], *currentCmd)
 		}
 	}
 	return false
@@ -314,7 +314,7 @@ func (c *Cabin) shouldStopAtCurrentFloor(currentCmd *command) bool {
 
 func findFloor(cmds []command, floor int) int {
 	for i := 0; i < len(cmds); i++ {
-		if cmds[i].floor == floor {
+		if cmds[i].Floor == floor {
 			return i
 		}
 	}
@@ -326,18 +326,18 @@ func hasFloor(cmds []command, floor int) bool {
 }
 
 func (c *Cabin) deleteGo(floor int) {
-	i := findFloor(c.gos, floor)
-	//fmt.Printf("delete floor %d GOS %+v\nfound %d\n", floor, c.gos, i)
-	if i < len(c.gos) {
-		c.gos = c.gos[:i+copy(c.gos[i:], c.gos[i+1:])]
+	i := findFloor(c.Gos, floor)
+	//fmt.Printf("delete floor %d GOS %+v\nfound %d\n", floor, c.Gos, i)
+	if i < len(c.Gos) {
+		c.Gos = c.Gos[:i+copy(c.Gos[i:], c.Gos[i+1:])]
 		//cmds[i], cmds = cmds[len(cmds)-1], cmds[:len(cmds)-1]
 	}
 }
 
 func (c *Cabin) deleteCall(floor int) {
-	i := findFloor(c.calls, floor)
-	if i < len(c.calls) {
-		c.calls = c.calls[:i+copy(c.calls[i:], c.calls[i+1:])]
+	i := findFloor(c.Calls, floor)
+	if i < len(c.Calls) {
+		c.Calls = c.Calls[:i+copy(c.Calls[i:], c.Calls[i+1:])]
 		//cmds[i], cmds = cmds[len(cmds)-1], cmds[:len(cmds)-1]
 	}
 }

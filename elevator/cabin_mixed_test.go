@@ -6,7 +6,7 @@ import (
 
 func TestMixedPreventStopIfCallCountExceedCabinSize(t *testing.T) {
 	setup()
-	e.crew = e.cabinSize - 3
+	e.Crew = e.CabinSize - 3
 	e.Go(2)
 	e.Call(1, UP)
 	e.Call(1, UP)
@@ -24,7 +24,7 @@ func TestMixedPreventStopIfCallCountExceedCabinSize(t *testing.T) {
 
 func TestMixedPreventStopCallIfFull(t *testing.T) {
 	setup()
-	e.crew = e.cabinSize
+	e.Crew = e.CabinSize
 	e.Go(2)
 	e.Call(1, UP)
 
@@ -39,7 +39,7 @@ func TestMixedPreventStopCallIfFull(t *testing.T) {
 
 func TestMixedGoDownCallUpCurrentFloor(t *testing.T) {
 	setup()
-	e.currentFloor = 3
+	e.CurrentFloor = 3
 	e.Go(2)
 	e.Call(3, UP)
 
@@ -54,7 +54,7 @@ func TestMixedGoDownCallUpCurrentFloor(t *testing.T) {
 
 func TestMixedGoUpCallDownCurrentFloor(t *testing.T) {
 	setup()
-	e.currentFloor = 3
+	e.CurrentFloor = 3
 	e.Go(4)
 	e.Call(3, DOWN)
 
@@ -69,7 +69,7 @@ func TestMixedGoUpCallDownCurrentFloor(t *testing.T) {
 
 func TestMixedGoDownCallDownCurrentFloor(t *testing.T) {
 	setup()
-	e.currentFloor = 5
+	e.CurrentFloor = 5
 	e.Go(4)
 	e.Call(5, DOWN)
 
@@ -112,7 +112,7 @@ func TestMixedGoUpSkipCallDown(t *testing.T) {
 
 func TestMixedGoDownSkipCallUp(t *testing.T) {
 	setup()
-	e.currentFloor = 5
+	e.CurrentFloor = 5
 	e.Go(1)
 	e.Call(3, UP)
 
@@ -141,7 +141,7 @@ func TestMixedGoUpStopAtCallUp(t *testing.T) {
 
 func TestMixedGoDownStopAtCallDown(t *testing.T) {
 	setup()
-	e.currentFloor = 5
+	e.CurrentFloor = 5
 	e.Go(1)
 	e.Call(3, DOWN)
 

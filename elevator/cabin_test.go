@@ -36,13 +36,13 @@ func assertInt(t *testing.T, value int, want int) {
 }
 
 func assertCrew(t *testing.T, e *Cabin, crew int) {
-	if e.crew != crew {
-		t.Errorf("expected crew %d but was %d", crew, e.crew)
+	if e.Crew != crew {
+		t.Errorf("expected crew %d but was %d", crew, e.Crew)
 	}
 }
 
 func assertDoorClosed(t *testing.T, e *Cabin) {
-	if e.opened {
+	if e.Opened {
 		t.Error("exected door closed but was opened")
 	}
 }
@@ -52,8 +52,8 @@ func assertNoMoreGo(t *testing.T, e *Cabin) {
 }
 
 func assertNbGo(t *testing.T, e *Cabin, nbGos int) {
-	if len(e.gos) != nbGos {
-		t.Errorf("expected %d GO but was %d", nbGos, len(e.gos))
+	if len(e.Gos) != nbGos {
+		t.Errorf("expected %d GO but was %d", nbGos, len(e.Gos))
 	}
 }
 
@@ -62,14 +62,14 @@ func assertNoMoreCall(t *testing.T, e *Cabin) {
 }
 
 func assertNbCall(t *testing.T, e *Cabin, nbCalls int) {
-	if len(e.calls) != nbCalls {
-		t.Errorf("expected %d CALL but was %d", nbCalls, len(e.calls))
+	if len(e.Calls) != nbCalls {
+		t.Errorf("expected %d CALL but was %d", nbCalls, len(e.Calls))
 	}
 }
 
 func assertFloor(t *testing.T, c *Cabin, floor int) {
-	if c.currentFloor != floor {
-		t.Errorf("expected floor %d but was %d", floor, c.currentFloor)
+	if c.CurrentFloor != floor {
+		t.Errorf("expected floor %d but was %d", floor, c.CurrentFloor)
 	}
 }
 
@@ -99,7 +99,7 @@ func TestIdle(t *testing.T) {
 
 func TestOpenedDoor(t *testing.T) {
 	setup()
-	e.opened = true
+	e.Opened = true
 
 	c := nextCommands(e)
 
@@ -114,7 +114,7 @@ func TestReset(t *testing.T) {
 	e.Go(5)
 	e.UserHasEntered()
 	nextCommands(e)
-	e.opened = true
+	e.Opened = true
 
 	e.Reset(-1, 50, 500, "yeah")
 
@@ -128,7 +128,7 @@ func TestReset(t *testing.T) {
 	assertNoMoreCall(t, e)
 	assertNoMoreGo(t, e)
 	assertDoorClosed(t, e)
-	if e.cabinSize != 500 {
+	if e.CabinSize != 500 {
 		t.Errorf("bad cabinsize")
 	}
 	assertCrew(t, e, 0)
@@ -144,7 +144,7 @@ func TestUserHasEntered(t *testing.T) {
 
 func TestUserHasExited(t *testing.T) {
 	setup()
-	e.crew = 1
+	e.Crew = 1
 
 	e.UserHasExited()
 
@@ -162,11 +162,11 @@ func TestUsersEnterAndExit(t *testing.T) {
 
 func TestUserCannotEnterIfFull(t *testing.T) {
 	setup()
-	e.crew = e.cabinSize
+	e.Crew = e.CabinSize
 
 	e.UserHasEntered()
 
-	assertCrew(t, e, e.cabinSize)
+	assertCrew(t, e, e.CabinSize)
 }
 
 func TestUserCannotExitIfEmpty(t *testing.T) {
@@ -220,18 +220,18 @@ func TestCommandCount(t *testing.T) {
 	e.Go(3)
 
 	assertNbCall(t, e, 2)
-	if e.calls[0].count != 3 {
-		t.Errorf("Inccorrect call count, expected 3 but was %d", e.calls[0].count)
+	if e.Calls[0].Count != 3 {
+		t.Errorf("Inccorrect call count, expected 3 but was %d", e.Calls[0].Count)
 	}
-	if e.calls[1].count != 1 {
-		t.Errorf("Inccorrect call count, expected 1 but was %d", e.calls[1].count)
+	if e.Calls[1].Count != 1 {
+		t.Errorf("Inccorrect call count, expected 1 but was %d", e.Calls[1].Count)
 	}
 	assertNbGo(t, e, 2)
-	if e.gos[0].count != 1 {
-		t.Errorf("Inccorrect go count, expected 1 but was %d", e.gos[0].count)
+	if e.Gos[0].Count != 1 {
+		t.Errorf("Inccorrect go count, expected 1 but was %d", e.Gos[0].Count)
 	}
-	if e.gos[1].count != 4 {
-		t.Errorf("Inccorrect go count, expected 4 but was %d", e.gos[1].count)
+	if e.Gos[1].Count != 4 {
+		t.Errorf("Inccorrect go count, expected 4 but was %d", e.Gos[1].Count)
 	}
 }
 
@@ -271,7 +271,7 @@ func TestGoIsNotIdle(t *testing.T) {
 
 func TestNotEmptyNotIdle(t *testing.T) {
 	setup()
-	e.crew = 1
+	e.Crew = 1
 
 	b := e.IsIdle()
 
@@ -287,30 +287,5 @@ func TestMatchDirectionSameFloor(t *testing.T) {
 
 	if !b {
 		t.Errorf("Should match direction if same floor")
-	}
-}
-
-func TestMatchDirectionSameDirectionUp(t *testing.T) {
-	setup()
-	e.Go(1)
-	e.NextCommand()
-
-	b := e.MatchDirection(2)
-
-	if !b {
-		t.Errorf("Should match direction if same direction")
-	}
-}
-
-func TestMatchDirectionSameDirectionDown(t *testing.T) {
-	setup()
-	e.currentFloor=5
-	e.Go(1)
-	e.NextCommand()
-
-	b := e.MatchDirection(2)
-
-	if !b {
-		t.Errorf("Should match direction if same direction")
 	}
 }

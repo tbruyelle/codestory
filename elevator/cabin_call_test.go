@@ -14,14 +14,14 @@ func TestCallDirection(t *testing.T) {
 	e.Call(3, DOWN)
 	e.Call(3, DOWN)
 
-	if !e.calls[0].up || e.calls[0].down {
-		t.Errorf("incorrect direction, should up=true, down=false but was up=%t, down=%t", e.calls[0].up, e.calls[0].down)
+	if !e.Calls[0].Up || e.Calls[0].Down {
+		t.Errorf("incorrect direction, should up=true, down=false but was up=%t, down=%t", e.Calls[0].Up, e.Calls[0].Down)
 	}
-	if !e.calls[1].up || !e.calls[1].down {
-		t.Errorf("incorrect direction, should up=true, down=true but was up=%t, down=%t", e.calls[1].up, e.calls[1].down)
+	if !e.Calls[1].Up || !e.Calls[1].Down {
+		t.Errorf("incorrect direction, should up=true, down=true but was up=%t, down=%t", e.Calls[1].Up, e.Calls[1].Down)
 	}
-	if e.calls[2].up || !e.calls[2].down {
-		t.Errorf("incorrect direction, should up=false, down=true but was up=%t, down=%t", e.calls[2].up, e.calls[2].down)
+	if e.Calls[2].Up || !e.Calls[2].Down {
+		t.Errorf("incorrect direction, should up=false, down=true but was up=%t, down=%t", e.Calls[2].Up, e.Calls[2].Down)
 	}
 }
 
@@ -41,7 +41,7 @@ func TestCallDownAtMaxFloorStopAtCallUp(t *testing.T) {
 
 func TestCallUpAtMinFloorStopAtCallDown(t *testing.T) {
 	setup()
-	e.currentFloor = 5
+	e.CurrentFloor = 5
 	e.Call(0, UP)
 	e.Call(4, DOWN)
 	e.Call(1, DOWN)
@@ -56,7 +56,7 @@ func TestCallUpAtMinFloorStopAtCallDown(t *testing.T) {
 
 func TestDownCallDownSkipCallUp(t *testing.T) {
 	setup()
-	e.currentFloor = 5
+	e.CurrentFloor = 5
 	e.Call(3, UP)
 	e.Call(4, DOWN)
 
@@ -96,7 +96,7 @@ func TestUpCallDownSkipCallUp(t *testing.T) {
 
 func TestDownCallUpSkipCallDown(t *testing.T) {
 	setup()
-	e.currentFloor = 5
+	e.CurrentFloor = 5
 	e.Call(2, UP)
 	e.Call(3, DOWN)
 
@@ -110,7 +110,7 @@ func TestDownCallUpSkipCallDown(t *testing.T) {
 
 func TestDownCallUpSkipCallUp(t *testing.T) {
 	setup()
-	e.currentFloor = 5
+	e.CurrentFloor = 5
 	e.Call(3, UP)
 	e.Call(4, UP)
 
@@ -150,7 +150,7 @@ func TestUpCallUpStopAtCallUp(t *testing.T) {
 
 func TestDownCallDownStopAtCallDown(t *testing.T) {
 	setup()
-	e.currentFloor = 5
+	e.CurrentFloor = 5
 	e.Call(2, DOWN)
 	e.Call(3, DOWN)
 
@@ -164,7 +164,7 @@ func TestDownCallDownStopAtCallDown(t *testing.T) {
 
 func TestCallCurrentFloorOpenedDoor(t *testing.T) {
 	setup()
-	e.opened = true
+	e.Opened = true
 	e.Call(0, UP)
 
 	c := nextCommands(e)
@@ -187,7 +187,7 @@ func TestCallSameDirectionUp(t *testing.T) {
 }
 func TestCallSameDirectionDown(t *testing.T) {
 	setup()
-	e.currentFloor = 5
+	e.CurrentFloor = 5
 	e.Call(4, DOWN)
 	e.Call(2, DOWN)
 	e.Call(1, DOWN)
@@ -259,7 +259,7 @@ func TestCallUp(t *testing.T) {
 
 func TestCallDown(t *testing.T) {
 	setup()
-	e.currentFloor = 3
+	e.CurrentFloor = 3
 	e.Call(1, UP)
 
 	c := nextCommands(e)

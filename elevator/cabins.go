@@ -6,42 +6,39 @@ import (
 )
 
 type Cabins struct {
-	lowerFloor, higherFloor, currentFloor, cabCount int
-	cabinSize                                       int
-	calls                                           []command
-	cabs                                            []*Cabin
+	LowerFloor, HigherFloor, CabCount int
+	CabinSize                         int
+	Cabs                              []*Cabin
 }
 
 func (c *Cabins) String() string {
 	var s string
-	for i := 0; i < c.cabCount; i++ {
-		s += c.cabs[i].String()
+	for i := 0; i < c.CabCount; i++ {
+		s += c.Cabs[i].String()
 	}
 	return s
 }
 
-func NewCabins(lowerFloor, higherFloor, cabinSize, cabinCount int, debug bool) *Cabins {
+func NewCabins(LowerFloor, higherFloor, cabinSize, cabinCount int, debug bool) *Cabins {
 	c := new(Cabins)
-	initCabins(c, lowerFloor, higherFloor, cabinSize, cabinCount, debug)
+	initCabins(c, LowerFloor, higherFloor, cabinSize, cabinCount, debug)
 	return c
 }
 
 func initCabins(c *Cabins, lowerFloor, higherFloor, cabinSize, cabinCount int, debug bool) {
-	c.lowerFloor = lowerFloor
-	c.currentFloor = 0
-	c.higherFloor = higherFloor
-	c.calls = make([]command, 0)
-	c.cabinSize = cabinSize
-	c.cabCount = cabinCount
-	c.cabs = make([]*Cabin, cabinCount)
+	c.LowerFloor = lowerFloor
+	c.HigherFloor = higherFloor
+	c.CabinSize = cabinSize
+	c.CabCount = cabinCount
+	c.Cabs = make([]*Cabin, cabinCount)
 	for i := 0; i < cabinCount; i++ {
-		c.cabs[i] = NewCabin(lowerFloor, higherFloor, cabinSize, debug)
+		c.Cabs[i] = NewCabin(lowerFloor, higherFloor, cabinSize, debug)
 	}
 }
 
 func (c *Cabins) NextCommands() []string {
-	r := make([]string, c.cabCount)
-	for i, c := range c.cabs {
+	r := make([]string, c.CabCount)
+	for i, c := range c.Cabs {
 		r[i] = c.NextCommand()
 	}
 	return r
@@ -50,18 +47,18 @@ func (c *Cabins) NextCommands() []string {
 func (c *Cabins) Call(atFloor int, to string) {
 	// Determine the nearest idle elevator
 	cabin := -1
-	maxFloor := c.higherFloor - c.lowerFloor
-	for i := 0; i < len(c.cabs); i++ {
-		diff := floorDiff(c.cabs[i].currentFloor, atFloor)
-		if diff < maxFloor && c.cabs[i].IsIdle() {
+	maxFloor := c.HigherFloor - c.LowerFloor
+	for i := 0; i < c.CabCount; i++ {
+		diff := floorDiff(c.Cabs[i].CurrentFloor, atFloor)
+		if diff < maxFloor && c.Cabs[i].IsIdle() {
 			maxFloor = diff
 			cabin = i
 		}
 	}
 	if cabin == -1 {
 		// if no idle cabin, found the one in the same direction
-		for i := 0; i < len(c.cabs); i++ {
-			if c.cabs[i].MatchDirection(atFloor) {
+		for i := 0; i < c.CabCount; i++ {
+			if c.Cabs[i].MatchDirection(atFloor) {
 				cabin = i
 			}
 		}
@@ -71,11 +68,11 @@ func (c *Cabins) Call(atFloor int, to string) {
 		cabin = 0
 	}
 	// call the nearest
-	c.cabs[cabin].Call(atFloor, to)
+	c.Cabs[cabin].Call(atFloor, to)
 }
 
 func (c *Cabins) Go(floorToGo, cabin int) {
-	c.cabs[cabin].Go(floorToGo)
+	c.Cabs[cabin].Go(floorToGo)
 }
 
 func (c *Cabins) Reset(lowerFloor, higherFloor, cabinSize, cabinCount int, cause string) {
@@ -84,20 +81,20 @@ func (c *Cabins) Reset(lowerFloor, higherFloor, cabinSize, cabinCount int, cause
 }
 
 func (c *Cabins) Debug(enabled bool) {
-	for _, c := range c.cabs {
+	for _, c := range c.Cabs {
 		c.Debug(enabled)
 	}
 }
 func (c *Cabins) Ditdlamerde() {
-	for _, c := range c.cabs {
+	for _, c := range c.Cabs {
 		c.Ditdlamerde()
 	}
 }
 
 func (c *Cabins) UserHasEntered(cabin int) {
-	c.cabs[cabin].UserHasEntered()
+	c.Cabs[cabin].UserHasEntered()
 }
 
 func (c *Cabins) UserHasExited(cabin int) {
-	c.cabs[cabin].UserHasExited()
+	c.Cabs[cabin].UserHasExited()
 }

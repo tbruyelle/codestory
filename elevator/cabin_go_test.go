@@ -12,29 +12,29 @@ func TestNextGoUpChooseFarestFloor(t *testing.T) {
 
 	c := e.nextGo()
 
-	if c.floor != 5 {
-		t.Errorf("incorrect next GO, expected floor 5 but was floor %d", c.floor)
+	if c.Floor != 5 {
+		t.Errorf("incorrect next GO, expected floor 5 but was floor %d", c.Floor)
 	}
 }
 
 func TestNextGoDownChooseFarestFloor(t *testing.T) {
 	setup()
-	e.currentFloor = 5
+	e.CurrentFloor = 5
 	e.Go(4)
 	e.Go(3)
 	e.Go(1)
 
 	c := e.nextGo()
 
-	if c.floor != 1 {
-		t.Errorf("incorrect next GO, expected floor 1 but was floor %d", c.floor)
+	if c.Floor != 1 {
+		t.Errorf("incorrect next GO, expected floor 1 but was floor %d", c.Floor)
 	}
 }
 
 func TestNextGoUpDownChooseFarestFloor(t *testing.T) {
 	setup()
 	e.higherFloor = 20
-	e.currentFloor = 10
+	e.CurrentFloor = 10
 	e.Go(11)
 	e.Go(3)
 	e.Go(1)
@@ -42,15 +42,15 @@ func TestNextGoUpDownChooseFarestFloor(t *testing.T) {
 
 	c := e.nextGo()
 
-	if c.floor != 19 {
-		t.Errorf("incorrect next GO, expected floor 19 but was floor %d", c.floor)
+	if c.Floor != 19 {
+		t.Errorf("incorrect next GO, expected floor 19 but was floor %d", c.Floor)
 	}
 }
 
 func TestNextGoDownUpChooseFarestFloor(t *testing.T) {
 	setup()
 	e.higherFloor = 20
-	e.currentFloor = 10
+	e.CurrentFloor = 10
 	e.Go(9)
 	e.Go(3)
 	e.Go(1)
@@ -58,8 +58,8 @@ func TestNextGoDownUpChooseFarestFloor(t *testing.T) {
 
 	c := e.nextGo()
 
-	if c.floor != 1 {
-		t.Errorf("incorrect next GO, expected floor 1 but was floor %d", c.floor)
+	if c.Floor != 1 {
+		t.Errorf("incorrect next GO, expected floor 1 but was floor %d", c.Floor)
 	}
 }
 
@@ -99,7 +99,7 @@ func TestGoUp(t *testing.T) {
 
 func TestGoDown(t *testing.T) {
 	setup()
-	e.currentFloor = 2
+	e.CurrentFloor = 2
 	e.Go(0)
 
 	c := nextCommands(e)
@@ -180,7 +180,7 @@ func TestGoSameDirectionUp(t *testing.T) {
 
 func TestGoSameDirectionDown(t *testing.T) {
 	setup()
-	e.currentFloor = 5
+	e.CurrentFloor = 5
 	e.Go(4)
 	e.Go(2)
 	e.Go(1)
@@ -209,7 +209,7 @@ func TestGosUpChooseNearest(t *testing.T) {
 
 func TestGosDownChooseNearest(t *testing.T) {
 	setup()
-	e.currentFloor = 5
+	e.CurrentFloor = 5
 	e.Go(1)
 	e.Go(3)
 	e.Go(2)

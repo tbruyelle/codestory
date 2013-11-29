@@ -2,6 +2,7 @@ package elevator
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -55,6 +56,12 @@ func init() {
 }
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
+	t,err:=template.ParseFiles("views/index.html")
+	if err!=nil{
+	fmt.Fprint(w, err)
+	return
+	}
+	t.Execute(w,elevators) 
 }
 
 func nextCommandsHandler(w http.ResponseWriter, r *http.Request) {
