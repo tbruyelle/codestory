@@ -21,13 +21,18 @@
 				</iframe>
 			</div>
 			<div class="col-lg-9">
-				<p>lower={{.LowerFloor}}, higher={{.HigherFloor}}, nbCabs={{.CabCount}}, cabSize={{.CabinSize}}</p>
+				<p>
+				<span class="glyphicon glyphicon-resize-vertical">{{.LowerFloor}}/{{.HigherFloor}}</span>
+				<span class="glyphicon glyphicon-sound-stereo">{{.CabinSize}}*{{.CabCount}}</span>
 
 				<div class="container">
 					{{range $ind, $can := .Cabs}}
 					<div class="col-md-6">
 						<h3>Cabin {{$ind}}</h3>
-						<p>Crew: <strong>{{.Crew}}</strong>, currentFloor: <strong>{{.CurrentFloor}}</strong></p>
+						<p>
+						<span class="glyphicon glyphicon-user">{{.Crew}}</span>
+						<span class="badge">{{.CurrentFloor}}</span>
+						</p>
 						<p>
 						Calls:
 						<table class="table table-striped">
