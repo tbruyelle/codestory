@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>My fucking elevator</title>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="col-lg-3">
+				<iframe src="http://elevator-battle.ybonnel.eu.cloudbees.net/#/battle/tbruyelle/-"
+					height="1800"
+					width="250"
+					>
+				</iframe>
+			</div>
+			<div class="col-lg-9">
+				<p>lower={{.LowerFloor}}, higher={{.HigherFloor}}, nbCabs={{.CabCount}}, cabSize={{.CabinSize}}</p>
+
+				<div class="container">
+					{{range $ind, $can := .Cabs}}
+					<div class="col-md-6">
+						<h3>Cabin {{$ind}}</h3>
+						<p>Crew: <strong>{{.Crew}}</strong>, currentFloor: <strong>{{.CurrentFloor}}</strong></p>
+						<p>
+						Calls:
+						<table class="table table-striped">
+							<thead>
+								<tr><th>floor</th><th>up/down</th><th>weight</th></tr>
+							</thead>
+							<tbody>
+								{{range .Calls}}
+								<tr><td>{{.Floor}}</td><td>{{.Up}}/{{.Down}}</td><td>{{.Count}}</td></tr>
+								{{end}}
+							</tbody>
+						</table>
+						</p>
+						<p>
+						Gos:
+						<table class="table table-striped">
+							<thead>
+								<tr><th>floor</th><th>up/down</th><th>weight</th></tr>
+							</thead>
+							<tbody>
+								{{range .Gos}}
+								<tr><td>{{.Floor}}</td><td>{{.Up}}/{{.Down}}</td><td>{{.Count}}</td></tr>
+								{{end}}
+							</tbody>
+						</table>
+						</p>
+					</div>
+					{{end}}
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

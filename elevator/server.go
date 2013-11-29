@@ -53,15 +53,16 @@ func init() {
 	http.HandleFunc("/userHasExited", userHasExitedHandler)
 	http.HandleFunc("/ditdlamerde", shitHandler)
 	http.HandleFunc("/debug", debugHandler)
+	http.Handle("/res/", http.StripPrefix("/res/", http.FileServer(http.Dir("res"))))
 }
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
-	t,err:=template.ParseFiles("views/index.html")
-	if err!=nil{
-	fmt.Fprint(w, err)
-	return
+	t, err := template.ParseFiles("views/index.html")
+	if err != nil {
+		fmt.Fprint(w, err)
+		return
 	}
-	t.Execute(w,elevators) 
+	t.Execute(w, elevators)
 }
 
 func nextCommandsHandler(w http.ResponseWriter, r *http.Request) {

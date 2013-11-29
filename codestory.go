@@ -6,11 +6,10 @@ import (
 	_ "bitbucket.org/tbruyelle/codestory/elevator"
 	"fmt"
 	"net/http"
-	"os"
 )
 
 func main() {
-	err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+	err := http.ListenAndServe(":8181", nil)
 	if err != nil {
 		fmt.Println(err)
 		return
