@@ -13,54 +13,78 @@
 	</head>
 	<body>
 		<div class="container">
-			<div class="col-lg-3">
-				<iframe src="http://elevator-battle.ybonnel.eu.cloudbees.net/#/battle/tbruyelle/-"
-					height="1800"
-					width="250"
-					>
-				</iframe>
-			</div>
-			<div class="col-lg-9">
-				<p>
-				<span class="glyphicon glyphicon-resize-vertical">{{.LowerFloor}}/{{.HigherFloor}}</span>
-				<span class="glyphicon glyphicon-sound-stereo">{{.CabinSize}}*{{.CabCount}}</span>
+			<div class="row">
+				<div class="col-lg-3">
+					<iframe src="http://elevator-battle.ybonnel.eu.cloudbees.net/#/battle/tbruyelle/-"
+						height="1800"
+						width="250"
+						>
+					</iframe>
+				</div>
+				<div class="col-lg-9">
+					<h3>
+						<span class="glyphicon glyphicon-resize-vertical"></span> {{.LowerFloor}}/{{.HigherFloor}}
+						<span class="glyphicon glyphicon-sound-stereo"></span> {{.CabinSize}}*{{.CabCount}}
+					</h3>
 
-				<div class="container">
-					{{range $ind, $can := .Cabs}}
-					<div class="col-md-6">
-						<h3>Cabin {{$ind}}</h3>
-						<p>
-						<span class="glyphicon glyphicon-user">{{.Crew}}</span>
-						<span class="badge">{{.CurrentFloor}}</span>
-						</p>
-						<p>
-						Calls:
-						<table class="table table-striped">
-							<thead>
-								<tr><th>floor</th><th>up/down</th><th>weight</th></tr>
-							</thead>
-							<tbody>
-								{{range .Calls}}
-								<tr><td>{{.Floor}}</td><td>{{.Up}}/{{.Down}}</td><td>{{.Count}}</td></tr>
-								{{end}}
-							</tbody>
-						</table>
-						</p>
-						<p>
-						Gos:
-						<table class="table table-striped">
-							<thead>
-								<tr><th>floor</th><th>up/down</th><th>weight</th></tr>
-							</thead>
-							<tbody>
-								{{range .Gos}}
-								<tr><td>{{.Floor}}</td><td>{{.Up}}/{{.Down}}</td><td>{{.Count}}</td></tr>
-								{{end}}
-							</tbody>
-						</table>
-						</p>
+					<div class="row">
+						{{range $ind, $can := .Cabs}}
+						<div class="col-md-6">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+
+									<h3 class="panel-title">
+										<span class="label label-warning">{{$ind}}</span> 
+										{{if .Opened}}<span class="glyphicon glyphicon-resize-horizontal"></span>{{end}}
+										{{if .IsIdle}}<span class="glyphicon glyphicon-time"></span>{{end}}
+									</h3>
+								</div>
+								<div class="panel-body">
+									<p>
+									Floor <span class="badge">{{.CurrentFloor}}</span>
+									<span class="glyphicon glyphicon-user"></span> <span class="badge">{{.Crew}}</span>
+									{{with .Direction}}Direction <span class="badge">{{.}}</span>{{end}}
+									</p>
+								</div>
+								<table class="table table-striped">
+									<thead>
+										<tr><th><span class="label label-primary">CALLS<span><th>floor</th><th><span class="glyphicon glyphicon-resize-vertical"></span></th><th><span class="glyphicon glyphicon-user"></span></th></tr>
+									</thead>
+									<tbody>
+										{{range .Calls}}
+										<tr>
+											<td></td>
+											<td><span class="badge">{{.Floor}}</span></td>
+											<td>
+												{{if .Up}}<span class="glyphicon glyphicon-arrow-up"></span>{{end}}
+												{{if .Down}}<span class="glyphicon glyphicon-arrow-down"></span>{{end}}
+											</td>
+											<td><span class="badge">{{.Count}}</span></td>
+										</tr>
+										{{end}}
+									</tbody>
+									<thead>
+										<tr><th><span class="label label-success">GOS</span></th><th>floor</th><th><span class="glyphicon glyphicon-resize-vertical"></span></th><th><span class="glyphicon glyphicon-user"></span></th></tr>
+									</thead>
+									<tbody>
+										{{range .Gos}}
+										<tr>
+											<td></td>
+											<td><span class="badge">{{.Floor}}</span></td>
+											<td>
+												{{if .Up}}<span class="glyphicon glyphicon-arrow-up"></span>{{end}}
+												{{if .Down}}<span class="glyphicon glyphicon-arrow-down"></span>{{end}}
+											</td>
+											<td><span class="badge">{{.Count}}</span></td>
+										</tr>
+										{{end}}
+									</tbody>
+								</table>
+								</p>
+							</div>
+						</div>
+						{{end}}
 					</div>
-					{{end}}
 				</div>
 			</div>
 		</div>
