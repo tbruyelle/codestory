@@ -3,7 +3,7 @@
 package main
 
 import (
-	_ "./elevator"
+	_ "codestory/elevator"
 	"fmt"
 	"net/http"
 	"os"
