@@ -1,6 +1,6 @@
 $(document).ready(function() {
-	$('#refresh').on('click', function(event) {
+	window.setInterval(function(event) {
 		$.pjax({url:'/', container:'#pjax-container'})
-	})
+	}, 5000)
 })
 
