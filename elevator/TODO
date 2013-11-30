@@ -1,5 +1,5 @@
 --- remplacer direction par lastCommand et virer opened
 - mode over capacity?
 - si rien a faire retourner au milieu du building
-- envoyer en priorite l'ascenseur idle lors du choix du call
-- prendre en compte la direction de l'ascenseur lors du choix du call
+- afficher la date du dernier reset
+- afficher la command courante
