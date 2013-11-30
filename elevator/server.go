@@ -57,12 +57,27 @@ func init() {
 }
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("views/index.html")
-	if err != nil {
-		fmt.Fprint(w, err)
-		return
+	if r.Header.Get("X-PJAX") == "" {
+		t, err := template.ParseFiles("views/index.html", "views/dashboard.html")
+		if err != nil {
+			fmt.Fprint(w, err)
+			return
+		}
+		err = t.Execute(w, elevators)
+		if err != nil {
+			fmt.Fprint(w, err)
+		}
+	} else {
+		t, err := template.ParseFiles("views/dashboard.html")
+		if err != nil {
+			fmt.Fprint(w, err)
+			return
+		}
+		err = t.ExecuteTemplate(w, "dashboard", elevators)
+		if err != nil {
+			fmt.Fprint(w, err)
+		}
 	}
-	t.Execute(w, elevators)
 }
 
 func nextCommandsHandler(w http.ResponseWriter, r *http.Request) {

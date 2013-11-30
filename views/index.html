@@ -13,95 +13,26 @@
 
 		<!-- Latest compiled and minified JavaScript -->
 		<script src="/res/js/bootstrap.min.js"></script>
+		<script src="/res/js/elevator.js"></script>
 	</head>
 	<body>
-		<script type="text/javascript">
-			$(document).ready(function() {
-					$('#refresh').on('click', function(event) {
-						$.pjax({url:'/', container:'#pjax-container'})
-						})
-					})
-</script>
-<div class="container">
-	<div class="row">
-		<div class="col-lg-3">
-				{{range $ind, $can := .Cabs}}
-				{{.CurrentFloor}}
-				{{end}}
-			<iframe src="http://elevator-battle.ybonnel.eu.cloudbees.net/#/battle/tbruyelle/-"
-				height="1800"
-				width="250"
-				>
-			</iframe>
-		</div>
-		<div class="col-lg-9" id="pjax-container">
-			<h3>
-				<span class="glyphicon glyphicon-resize-vertical"></span> {{.LowerFloor}}/{{.HigherFloor}}
-				<span class="glyphicon glyphicon-sound-stereo"></span> {{.CabinSize}}*{{.CabCount}}
-			</h3>
-			<button type="button" class="btn btn-default" id="refresh">Click</button>
-			<a href="#">fuck</a>
-
+		<div class="container">
 			<div class="row">
-				{{range $ind, $can := .Cabs}}
-				<div class="col-md-6">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-
-							<h3 class="panel-title">
-								<span class="label label-warning">{{$ind}}</span> 
-								{{if .Opened}}<span class="glyphicon glyphicon-resize-horizontal"></span>{{end}}
-								{{if .IsIdle}}<span class="glyphicon glyphicon-time"></span>{{end}}
-							</h3>
-						</div>
-						<div class="panel-body">
-							<p>
-							Floor <span class="badge">{{.CurrentFloor}}</span>
-							<span class="glyphicon glyphicon-user"></span> <span class="badge">{{.Crew}}</span>
-							{{with .Direction}}Direction <span class="badge">{{.}}</span>{{end}}
-							</p>
-						</div>
-						<table class="table table-striped">
-							<thead>
-								<tr><th><span class="label label-primary">CALLS<span><th>floor</th><th><span class="glyphicon glyphicon-resize-vertical"></span></th><th><span class="glyphicon glyphicon-user"></span></th></tr>
-										</thead>
-										<tbody>
-											{{range .Calls}}
-											<tr>
-												<td></td>
-												<td><span class="badge">{{.Floor}}</span></td>
-												<td>
-													{{if .Up}}<span class="glyphicon glyphicon-arrow-up"></span>{{end}}
-													{{if .Down}}<span class="glyphicon glyphicon-arrow-down"></span>{{end}}
-												</td>
-												<td><span class="badge">{{.Count}}</span></td>
-											</tr>
-											{{end}}
-										</tbody>
-										<thead>
-											<tr><th><span class="label label-success">GOS</span></th><th>floor</th><th><span class="glyphicon glyphicon-resize-vertical"></span></th><th><span class="glyphicon glyphicon-user"></span></th></tr>
-										</thead>
-										<tbody>
-											{{range .Gos}}
-											<tr>
-												<td></td>
-												<td><span class="badge">{{.Floor}}</span></td>
-												<td>
-													{{if .Up}}<span class="glyphicon glyphicon-arrow-up"></span>{{end}}
-													{{if .Down}}<span class="glyphicon glyphicon-arrow-down"></span>{{end}}
-												</td>
-												<td><span class="badge">{{.Count}}</span></td>
-											</tr>
-											{{end}}
-										</tbody>
-									</table>
-									</p>
-								</div>
-							</div>
-							{{end}}
-						</div>
-					</div>
+				<div class="col-lg-3">
+					<button type="button" class="btn btn-default" id="refresh">Click</button>
+					{{range $ind, $can := .Cabs}}
+					{{.CurrentFloor}}
+					{{end}}
+					<iframe src="http://elevator-battle.ybonnel.eu.cloudbees.net/#/battle/tbruyelle/-"
+						height="1800"
+						width="250"
+						>
+					</iframe>
+				</div>
+				<div class="col-lg-9" id="pjax-container">
+					{{template "dashboard" .}}
 				</div>
 			</div>
-		</body>
-	</html>
+		</div>
+	</body>
+</html>
