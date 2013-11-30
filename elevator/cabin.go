@@ -40,7 +40,7 @@ func (c *Cabin) String() string {
 }
 
 func (c *Cabin) IsIdle() bool {
-	return c.Direction != UP && c.Direction != DOWN && c.Crew == 0
+	return len(c.Gos) == 0 && len(c.Calls) == 0 && c.Crew == 0
 }
 
 func (c *Cabin) MatchDirection(floor int) bool {
