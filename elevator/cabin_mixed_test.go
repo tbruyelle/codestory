@@ -166,3 +166,24 @@ func TestMixedGoCalledFloor(t *testing.T) {
 	assertNoMoreGo(t, e)
 	assertNoMoreCall(t, e)
 }
+
+func TestMixedOpenUP(t *testing.T) {
+	setup()
+	e.Go(4)
+	e.Call(3, UP)
+
+	c := nextCommands(e)
+
+	assert(t, c, UP+UP+UP+OPEN_UP+CLOSE+UP+OPEN+CLOSE+NOTHING)
+}
+
+func TestMixedOpenDown(t *testing.T) {
+	setup()
+	e.CurrentFloor = 4
+	e.Go(2)
+	e.Call(3, DOWN)
+
+	c := nextCommands(e)
+
+	assert(t, c, DOWN+OPEN_DOWN+CLOSE+OPEN+CLOSE+NOTHING)
+}

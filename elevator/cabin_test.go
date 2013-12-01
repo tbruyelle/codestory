@@ -24,6 +24,12 @@ func userExited(e *Cabin, nb int) {
 }
 
 func assert(t *testing.T, value string, want string) {
+	value = strings.Replace(value, OPEN_UP, OPEN, -1)
+	value = strings.Replace(value, OPEN_DOWN, OPEN, -1)
+	assertReal(t, value, want)
+}
+
+func assertReal(t *testing.T, value string, want string) {
 	if value != want {
 		t.Errorf("expected %s but was %s", want, value)
 	}

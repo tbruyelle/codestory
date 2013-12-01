@@ -302,9 +302,20 @@ func TestCallNegativeFloors(t *testing.T) {
 }
 
 func TestCallOpenUp(t *testing.T) {
-setup()
-e.Call(2,UP)
-c:=nextCommands(e)
+	setup()
+	e.Call(2, UP)
 
-assert(t, c, UP+UP+OPEN_UP+CLOSE+NOTHING)
+	c := nextCommands(e)
+
+	assertReal(t, c, UP+UP+OPEN_UP+CLOSE+NOTHING)
+}
+
+func TestCallOpenDown(t *testing.T) {
+	setup()
+	e.CurrentFloor = 3
+	e.Call(1, DOWN)
+
+	c := nextCommands(e)
+
+	assertReal(t, c, DOWN+DOWN+OPEN_DOWN+CLOSE+NOTHING)
 }

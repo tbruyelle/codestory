@@ -63,7 +63,6 @@ func TestNextGoDownUpChooseFarestFloor(t *testing.T) {
 	}
 }
 
-
 func TestGosSameFloor(t *testing.T) {
 	setup()
 
@@ -220,4 +219,23 @@ func TestGosDownChooseNearest(t *testing.T) {
 	assertFloor(t, e, 1)
 	assertNoMoreGo(t, e)
 	assertDoorClosed(t, e)
+}
+
+func TestGoUpOpen(t *testing.T) {
+	setup()
+	e.Go(2)
+
+	c := nextCommands(e)
+
+	assertReal(t, c, UP+UP+OPEN+CLOSE+NOTHING)
+}
+
+func TestGoDownOpen(t *testing.T) {
+	setup()
+	e.CurrentFloor=3
+	e.Go(1)
+
+	c := nextCommands(e)
+
+	assertReal(t, c, DOWN+DOWN+OPEN+CLOSE+NOTHING)
 }

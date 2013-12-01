@@ -4,3 +4,4 @@
 - afficher la date du dernier reset
 - afficher la command courante
 - gerer OPEN_UP et OPEN_DOWN (plein de test a revoir)
+- si aucune cabine ne correspond choisir la moins charge en terme de nombre de call/go

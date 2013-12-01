@@ -54,14 +54,16 @@ func (c *Cabin) MatchDirection(floor int) bool {
 }
 
 const (
-	OPEN     = "OPEN"
-	CLOSE    = "CLOSE"
-	UP       = "UP"
-	DOWN     = "DOWN"
-	NOTHING  = "NOTHING"
-	POOP     = "POOP"
-	CMD_CALL = 'c'
-	CMD_GO   = 'g'
+	OPEN      = "OPEN"
+	OPEN_UP   = "OPEN_UP"
+	OPEN_DOWN = "OPEN_DOWN"
+	CLOSE     = "CLOSE"
+	UP        = "UP"
+	DOWN      = "DOWN"
+	NOTHING   = "NOTHING"
+	POOP      = "POOP"
+	CMD_CALL  = 'c'
+	CMD_GO    = 'g'
 )
 
 func (c *Cabin) Ditdlamerde() {
@@ -267,6 +269,12 @@ func (c *Cabin) floorProcessed(floor int) {
 func (c *Cabin) processCmdCurrentFloor() string {
 	c.Opened = true
 	c.floorProcessed(c.CurrentFloor)
+	switch c.Direction {
+		case UP:
+		return OPEN_UP
+		case DOWN:
+		return OPEN_DOWN
+	}
 	return OPEN
 }
 
