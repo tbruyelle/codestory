@@ -4,4 +4,3 @@
 - afficher la date du dernier reset
 - afficher la command courante
 - gerer OPEN_UP et OPEN_DOWN (plein de test a revoir)
-- cabin la moins pleine dans le choose call

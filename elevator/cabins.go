@@ -51,6 +51,10 @@ func (c *Cabins) Call(atFloor int, to string) {
 	cabMap := make(map[int][]int)
 	for i := 0; i < c.CabCount; i++ {
 		diff := floorDiff(c.Cabs[i].CurrentFloor, atFloor)
+		if c.Cabs[i].isFull() {
+		// if cabin full increase the diff
+			diff += 1000
+		}
 		inds := cabMap[diff]
 		inds = append(inds, i)
 		sort.Ints(inds)
