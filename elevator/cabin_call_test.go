@@ -300,3 +300,11 @@ func TestCallNegativeFloors(t *testing.T) {
 	assertNoMoreCall(t, e)
 	assertDoorClosed(t, e)
 }
+
+func TestCallOpenUp(t *testing.T) {
+setup()
+e.Call(2,UP)
+c:=nextCommands(e)
+
+assert(t, c, UP+UP+OPEN_UP+CLOSE+NOTHING)
+}
