@@ -113,6 +113,40 @@ func TestCabinsCallChooseCabinSameDirectionUp(t *testing.T) {
 	assert(t, c[1], UP+UP+UP+UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
 }
 
+func TestCabinsCallChooseNearestCabinInSameDirection(t *testing.T) {
+	setupCs()
+	cs.Cabs[0].CurrentFloor = 2
+	cs.Go(6, 0)
+	cs.Cabs[1].CurrentFloor = 4
+	cs.Go(6, 1)
+	tmp := cs.NextCommands() // start moving
+
+	cs.Call(5, UP)
+	c := nextCommandss(cs)
+	c[0] = tmp[0] + c[0]
+	c[1] = tmp[1] + c[1]
+
+	assert(t, c[0], UP+UP+UP+UP+OPEN+CLOSE+NOTHING)
+	assert(t, c[1], UP+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
+}
+
+func TestCabinsCallOtherDirectionChooseNearestCabinInSameDirection(t *testing.T) {
+	setupCs()
+	cs.Cabs[0].CurrentFloor = 2
+	cs.Go(6, 0)
+	cs.Cabs[1].CurrentFloor = 4
+	cs.Go(6, 1)
+	tmp := cs.NextCommands() // start moving
+
+	cs.Call(5, DOWN)
+	c := nextCommandss(cs)
+	c[0] = tmp[0] + c[0]
+	c[1] = tmp[1] + c[1]
+
+	assert(t, c[0], UP+UP+UP+UP+OPEN+CLOSE+NOTHING)
+	assert(t, c[1], UP+UP+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+}
+
 func nextCommandss(cs *Cabins) []string {
 	cmds := make([]string, 2)
 	for i := 0; i < 100; i++ {

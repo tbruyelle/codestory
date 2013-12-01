@@ -2,6 +2,7 @@ package elevator
 
 import (
 	"log"
+	"sort"
 	"time"
 )
 
@@ -45,23 +46,29 @@ func (c *Cabins) NextCommands() []string {
 }
 
 func (c *Cabins) Call(atFloor int, to string) {
-	// Determine the nearest idle elevator
-	cabin := -1
-	maxFloor := c.HigherFloor - c.LowerFloor
+	// order the cabs by their close to the call
+	var cabClose []int
+	cabMap := make(map[int][]int)
 	for i := 0; i < c.CabCount; i++ {
 		diff := floorDiff(c.Cabs[i].CurrentFloor, atFloor)
-		if diff < maxFloor && c.Cabs[i].IsIdle() {
-			maxFloor = diff
-			cabin = i
-		}
+		inds := cabMap[diff]
+		inds = append(inds, i)
+		sort.Ints(inds)
+		cabMap[diff] = inds
+		cabClose = append(cabClose, diff)
 	}
+	sort.Ints(cabClose)
+	//fmt.Println(cabClose, cabMap)
+
+	// Determine the nearest idle elevator
+	cabin := chooseCab(c, cabClose, cabMap, func(i int) bool {
+		return c.Cabs[i].IsIdle()
+	})
 	if cabin == -1 {
 		// if no idle cabin, found the one in the same direction
-		for i := 0; i < c.CabCount; i++ {
-			if c.Cabs[i].MatchDirection(atFloor) {
-				cabin = i
-			}
-		}
+		cabin = chooseCab(c, cabClose, cabMap, func(i int) bool {
+			return c.Cabs[i].MatchDirection(atFloor)
+		})
 	}
 	if cabin == -1 {
 		//if not match choose the first cabin
@@ -69,6 +76,20 @@ func (c *Cabins) Call(atFloor int, to string) {
 	}
 	// call the nearest
 	c.Cabs[cabin].Call(atFloor, to)
+}
+
+func chooseCab(c *Cabins, cabClose []int, cabMap map[int][]int, condition func(i int) bool) int {
+	for _, k := range cabClose {
+		inds := cabMap[k]
+		for _, i := range inds {
+			if condition(i) {
+				//fmt.Println("found", i)
+				return i
+			}
+		}
+	}
+	//fmt.Println("not found")
+	return -1
 }
 
 func (c *Cabins) Go(floorToGo, cabin int) {
