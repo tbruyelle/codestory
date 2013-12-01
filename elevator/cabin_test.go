@@ -275,17 +275,6 @@ func TestGoIsNotIdle(t *testing.T) {
 	}
 }
 
-func TestNotEmptyNotIdle(t *testing.T) {
-	setup()
-	e.Crew = 1
-
-	b := e.IsIdle()
-
-	if b {
-		t.Errorf("Cabin shouldn't be idle")
-	}
-}
-
 func TestMatchDirectionSameFloor(t *testing.T) {
 	setup()
 

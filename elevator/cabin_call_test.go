@@ -307,7 +307,7 @@ func TestCallOpenUp(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assertReal(t, c, UP+UP+OPEN_UP+CLOSE+NOTHING)
+	assertReal(t, c, UP+UP+OPEN+CLOSE+NOTHING)
 }
 
 func TestCallOpenDown(t *testing.T) {
@@ -317,5 +317,5 @@ func TestCallOpenDown(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assertReal(t, c, DOWN+DOWN+OPEN_DOWN+CLOSE+NOTHING)
+	assertReal(t, c, DOWN+DOWN+OPEN+CLOSE+NOTHING)
 }

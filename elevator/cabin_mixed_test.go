@@ -174,7 +174,7 @@ func TestMixedOpenUP(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, UP+UP+UP+OPEN_UP+CLOSE+UP+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, UP+UP+UP+OPEN_UP+CLOSE+UP+OPEN+CLOSE+NOTHING)
 }
 
 func TestMixedOpenDown(t *testing.T) {
@@ -185,5 +185,5 @@ func TestMixedOpenDown(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, DOWN+OPEN_DOWN+CLOSE+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, DOWN+OPEN_DOWN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
 }

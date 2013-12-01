@@ -40,7 +40,7 @@ func (c *Cabin) String() string {
 }
 
 func (c *Cabin) IsIdle() bool {
-	return len(c.Gos) == 0 && len(c.Calls) == 0 && c.Crew == 0
+	return len(c.Gos) == 0 && len(c.Calls) == 0
 }
 
 func (c *Cabin) MatchDirection(floor int) bool {
@@ -269,11 +269,13 @@ func (c *Cabin) floorProcessed(floor int) {
 func (c *Cabin) processCmdCurrentFloor() string {
 	c.Opened = true
 	c.floorProcessed(c.CurrentFloor)
-	switch c.Direction {
+	if !c.IsIdle() {
+		switch c.Direction {
 		case UP:
-		return OPEN_UP
+			return OPEN_UP
 		case DOWN:
-		return OPEN_DOWN
+			return OPEN_DOWN
+		}
 	}
 	return OPEN
 }

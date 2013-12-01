@@ -3,5 +3,7 @@
 - si rien a faire retourner au milieu du building
 - afficher la date du dernier reset
 - afficher la command courante
+- dashboard: ajouter nb calls/go
 - gerer OPEN_UP et OPEN_DOWN (plein de test a revoir)
 - si aucune cabine ne correspond choisir la moins charge en terme de nombre de call/go
+- fix assert assertReal
