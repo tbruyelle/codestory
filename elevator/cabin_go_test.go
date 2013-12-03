@@ -239,3 +239,14 @@ func TestGoDownOpen(t *testing.T) {
 
 	assertReal(t, c, DOWN+DOWN+OPEN+CLOSE+NOTHING)
 }
+
+func TestGoUpDownOpenDown(t *testing.T) {
+setup()
+e.CurrentFloor=1
+e.Go(2)
+e.Go(0)
+
+c:=nextCommands(e)
+
+assertReal(t, c, UP+OPEN_DOWN+DOWN+DOWN+OPEN+CLOSE+NOTHING)
+}
