@@ -46,31 +46,29 @@ func (c *Cabins) NextCommands() []string {
 }
 
 func (c *Cabins) Call(atFloor int, to string) {
-	// order the cabs by their close to the call
-	var cabClose []int
+	// define a cabin weight, accordong to various attibutes
+	var cabWeight []int
 	cabMap := make(map[int][]int)
 	for i := 0; i < c.CabCount; i++ {
-		diff := floorDiff(c.Cabs[i].CurrentFloor, atFloor)
-		if c.Cabs[i].isFull() {
-		// if cabin full increase the diff
-			diff += 1000
-		}
-		inds := cabMap[diff]
+		weight := floorDiff(c.Cabs[i].CurrentFloor, atFloor)
+		// add the cabin content
+		weight += c.Cabs[i].Crew
+		inds := cabMap[weight]
 		inds = append(inds, i)
 		sort.Ints(inds)
-		cabMap[diff] = inds
-		cabClose = append(cabClose, diff)
+		cabMap[weight] = inds
+		cabWeight = append(cabWeight, weight)
 	}
-	sort.Ints(cabClose)
-	//fmt.Println(cabClose, cabMap)
+	sort.Ints(cabWeight)
+	//fmt.Println(cabWeight, cabMap)
 
 	// Determine the nearest idle elevator
-	cabin := chooseCab(c, cabClose, cabMap, func(i int) bool {
+	cabin := chooseCab(c, cabWeight, cabMap, func(i int) bool {
 		return c.Cabs[i].IsIdle()
 	})
 	if cabin == -1 {
 		// if no idle cabin, found the one in the same direction
-		cabin = chooseCab(c, cabClose, cabMap, func(i int) bool {
+		cabin = chooseCab(c, cabWeight, cabMap, func(i int) bool {
 			return c.Cabs[i].MatchDirection(atFloor)
 		})
 	}
@@ -82,8 +80,8 @@ func (c *Cabins) Call(atFloor int, to string) {
 	c.Cabs[cabin].Call(atFloor, to)
 }
 
-func chooseCab(c *Cabins, cabClose []int, cabMap map[int][]int, condition func(i int) bool) int {
-	for _, k := range cabClose {
+func chooseCab(c *Cabins, cabWeight []int, cabMap map[int][]int, condition func(i int) bool) int {
+	for _, k := range cabWeight {
 		inds := cabMap[k]
 		for _, i := range inds {
 			if condition(i) {
