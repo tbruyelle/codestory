@@ -33,7 +33,7 @@ func TestCallDownAtMaxFloorStopAtCallUp(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, UP+OPEN+CLOSE+UP+UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, UP+OPEN+CLOSE+UP+UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, 5)
 	assertDoorClosed(t, e)
 	assertNoMoreCall(t, e)
@@ -48,7 +48,7 @@ func TestCallUpAtMinFloorStopAtCallDown(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, DOWN+OPEN+CLOSE+DOWN+DOWN+DOWN+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, DOWN+OPEN+CLOSE+DOWN+DOWN+DOWN+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, 0)
 	assertDoorClosed(t, e)
 	assertNoMoreCall(t, e)
@@ -62,7 +62,7 @@ func TestDownCallDownSkipCallUp(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, DOWN+DOWN+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, DOWN+DOWN+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, 4)
 	assertDoorClosed(t, e)
 	assertNoMoreCall(t, e)
@@ -75,7 +75,7 @@ func TestUpCallUpSkipCallDown(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, UP+UP+UP+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, UP+UP+UP+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, 2)
 	assertDoorClosed(t, e)
 	assertNoMoreCall(t, e)
@@ -88,7 +88,7 @@ func TestUpCallDownSkipCallUp(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, UP+UP+UP+UP+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, UP+UP+UP+UP+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, 3)
 	assertDoorClosed(t, e)
 	assertNoMoreCall(t, e)
@@ -102,7 +102,7 @@ func TestDownCallUpSkipCallDown(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, DOWN+DOWN+DOWN+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, DOWN+DOWN+DOWN+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, 3)
 	assertDoorClosed(t, e)
 	assertNoMoreCall(t, e)
@@ -116,7 +116,7 @@ func TestDownCallUpSkipCallUp(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, DOWN+DOWN+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, DOWN+DOWN+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, 4)
 	assertDoorClosed(t, e)
 	assertNoMoreCall(t, e)
@@ -129,7 +129,7 @@ func TestUpCallDownSkipCallDown(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, UP+UP+UP+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, UP+UP+UP+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, 2)
 	assertDoorClosed(t, e)
 	assertNoMoreCall(t, e)
@@ -142,7 +142,7 @@ func TestUpCallUpStopAtCallUp(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, UP+UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, UP+UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, 4)
 	assertDoorClosed(t, e)
 	assertNoMoreCall(t, e)
@@ -156,7 +156,7 @@ func TestDownCallDownStopAtCallDown(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, DOWN+DOWN+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, DOWN+DOWN+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, 2)
 	assertDoorClosed(t, e)
 	assertNoMoreCall(t, e)
@@ -169,7 +169,7 @@ func TestCallCurrentFloorOpenedDoor(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, NOTHING+CLOSE+NOTHING)
+	assertReal(t, c, NOTHING+CLOSE+NOTHING)
 }
 
 func TestCallSameDirectionUp(t *testing.T) {
@@ -180,7 +180,7 @@ func TestCallSameDirectionUp(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+UP+UP+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, UP+UP+OPEN+CLOSE+UP+OPEN+CLOSE+UP+UP+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, 5)
 	assertNoMoreCall(t, e)
 	assertDoorClosed(t, e)
@@ -194,7 +194,7 @@ func TestCallSameDirectionDown(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, DOWN+OPEN+CLOSE+DOWN+DOWN+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, DOWN+OPEN+CLOSE+DOWN+DOWN+OPEN+CLOSE+DOWN+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, 1)
 	assertNoMoreCall(t, e)
 	assertDoorClosed(t, e)
@@ -215,7 +215,7 @@ func TestCallCurrentFloor(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, OPEN+CLOSE+NOTHING)
+	assertReal(t, c, OPEN+CLOSE+NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 0)
 	assertDoorClosed(t, e)
@@ -227,7 +227,7 @@ func TestCallTooLow(t *testing.T) {
 
 	c := e.NextCommand()
 
-	assert(t, c, NOTHING)
+	assertReal(t, c, NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 0)
 	assertDoorClosed(t, e)
@@ -239,7 +239,7 @@ func TestCallTooHigh(t *testing.T) {
 
 	c := e.NextCommand()
 
-	assert(t, c, NOTHING)
+	assertReal(t, c, NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 0)
 	assertDoorClosed(t, e)
@@ -251,7 +251,7 @@ func TestCallUp(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, UP+UP+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, UP+UP+OPEN+CLOSE+NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 2)
 	assertDoorClosed(t, e)
@@ -264,7 +264,7 @@ func TestCallDown(t *testing.T) {
 
 	c := nextCommands(e)
 
-	assert(t, c, DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, DOWN+DOWN+OPEN+CLOSE+NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 1)
 	assertDoorClosed(t, e)
@@ -280,7 +280,7 @@ func TestCalls(t *testing.T) {
 	e.Call(1, UP)
 	c += nextCommands(e)
 
-	assert(t, c, UP+UP+OPEN+CLOSE+NOTHING+UP+OPEN+CLOSE+NOTHING+DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, UP+UP+OPEN+CLOSE+NOTHING+UP+OPEN+CLOSE+NOTHING+DOWN+DOWN+OPEN+CLOSE+NOTHING)
 	assertNoMoreCall(t, e)
 	assertFloor(t, e, 1)
 	assertDoorClosed(t, e)
@@ -295,7 +295,7 @@ func TestCallNegativeFloors(t *testing.T) {
 	e.Call(-3, UP)
 	c += nextCommands(e)
 
-	assert(t, c, UP+UP+OPEN+CLOSE+NOTHING+DOWN+DOWN+DOWN+DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, UP+UP+OPEN+CLOSE+NOTHING+DOWN+DOWN+DOWN+DOWN+DOWN+OPEN+CLOSE+NOTHING)
 	assertFloor(t, e, -3)
 	assertNoMoreCall(t, e)
 	assertDoorClosed(t, e)
