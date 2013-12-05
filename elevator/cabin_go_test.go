@@ -232,7 +232,7 @@ func TestGoUpOpen(t *testing.T) {
 
 func TestGoDownOpen(t *testing.T) {
 	setup()
-	e.CurrentFloor=3
+	e.CurrentFloor = 3
 	e.Go(1)
 
 	c := nextCommands(e)
@@ -241,12 +241,12 @@ func TestGoDownOpen(t *testing.T) {
 }
 
 func TestGoUpDownOpenDown(t *testing.T) {
-setup()
-e.CurrentFloor=1
-e.Go(2)
-e.Go(0)
+	setup()
+	e.CurrentFloor = 1
+	e.Go(2)
+	e.Go(0)
 
-c:=nextCommands(e)
+	c := nextCommands(e)
 
-assertReal(t, c, UP+OPEN_DOWN+DOWN+DOWN+OPEN+CLOSE+NOTHING)
+	assertReal(t, c, UP+OPEN_DOWN+CLOSE+DOWN+DOWN+OPEN+CLOSE+NOTHING)
 }

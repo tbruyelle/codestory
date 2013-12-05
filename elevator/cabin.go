@@ -269,11 +269,11 @@ func (c *Cabin) floorProcessed(floor int) {
 func (c *Cabin) processCmdCurrentFloor() string {
 	c.Opened = true
 	c.floorProcessed(c.CurrentFloor)
-	if !c.IsIdle() {
-		switch c.Direction {
-		case UP:
+	cmd := c.nextGo()
+	if cmd != nil {
+		if cmd.Up {
 			return OPEN_UP
-		case DOWN:
+		} else {
 			return OPEN_DOWN
 		}
 	}
