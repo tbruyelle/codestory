@@ -6,7 +6,7 @@
 
 <div class="row">
 	{{range $ind, $can := .Cabs}}
-	<div class="col-md-6">
+	<div class="col-lg-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 
@@ -25,44 +25,45 @@
 			</div>
 			<table class="table table-striped">
 				<thead>
-					<tr><th><span class="label label-primary">CALLS<span><th>floor</th><th><span class="glyphicon glyphicon-resize-vertical"></span></th><th><span class="glyphicon glyphicon-user"></span></th></tr>
-							</thead>
-							<tbody>
-								{{range .Calls}}
-								<tr>
-									<td></td>
-									<td><span class="badge">{{.Floor}}</span></td>
-									<td>
-										{{if .Up}}<span class="glyphicon glyphicon-arrow-up"></span>{{end}}
-										{{if .Down}}<span class="glyphicon glyphicon-arrow-down"></span>{{end}}
-									</td>
-									<td><span class="badge">{{.Count}}</span></td>
-								</tr>
-								{{end}}
-							</tbody>
-							<thead>
-								<tr><th><span class="label label-success">GOS</span></th><th>floor</th><th><span class="glyphicon glyphicon-resize-vertical"></span></th><th><span class="glyphicon glyphicon-user"></span></th></tr>
-							</thead>
-							<tbody>
-								{{range .Gos}}
-								<tr>
-									<td></td>
-									<td><span class="badge">{{.Floor}}</span></td>
-									<td>
-										{{if .Up}}<span class="glyphicon glyphicon-arrow-up"></span>{{end}}
-										{{if .Down}}<span class="glyphicon glyphicon-arrow-down"></span>{{end}}
-									</td>
-									<td><span class="badge">{{.Count}}</span></td>
-								</tr>
-								{{end}}
-							</tbody>
-						</table>
-						</p>
-					</div>
-				</div>
-				{{end}}
-			</div>
+					<tr>
+						<th><span class="label label-primary">CALLS</span></th><th>floor</th><th><span class="glyphicon glyphicon-resize-vertical"></span></th><th><span class="glyphicon glyphicon-user"></span></th>
+					</tr>
+				</thead>
+				<tbody>
+					{{range .Calls}}
+					<tr>
+						<td></td>
+						<td><span class="badge">{{.Floor}}</span></td>
+						<td>
+							{{if .Up}}<span class="glyphicon glyphicon-arrow-up"></span>{{end}}
+							{{if .Down}}<span class="glyphicon glyphicon-arrow-down"></span>{{end}}
+						</td>
+						<td><span class="badge">{{.Count}}</span></td>
+					</tr>
+					{{end}}
+				</tbody>
+				<thead>
+					<tr>
+						<th><span class="label label-success">GOS</span></th><th>floor</th><th><span class="glyphicon glyphicon-resize-vertical"></span></th><th><span class="glyphicon glyphicon-user"></span></th>
+					</tr>
+				</thead>
+				<tbody>
+					{{range .Gos}}
+					<tr>
+						<td></td>
+						<td><span class="badge">{{.Floor}}</span></td>
+						<td>
+							{{if .Up}}<span class="glyphicon glyphicon-arrow-up"></span>{{end}}
+							{{if .Down}}<span class="glyphicon glyphicon-arrow-down"></span>{{end}}
+						</td>
+						<td><span class="badge">{{.Count}}</span></td>
+					</tr>
+					{{end}}
+				</tbody>
+			</table>
+			</p>
 		</div>
 	</div>
+	{{end}}
 </div>
 {{end}}
