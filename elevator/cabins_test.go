@@ -184,6 +184,17 @@ func TestCabinsCallBothFullChooseNearestCabin(t *testing.T) {
 	assert(t, c[1], UP+UP+UP+UP+OPEN+CLOSE+NOTHING)
 }
 
+func TestCabinsCallChooseLessLoadedCabin(t *testing.T) {
+	setupCs()
+	cs.Cabs[0].CurrentFloor = 2
+	cs.Cabs[0].Crew = 4
+
+	cs.Call(3, UP)
+	c := nextCommandss(cs)
+
+	assert(t, c[0], NOTHING)
+	assert(t, c[1], UP+UP+UP+OPEN+CLOSE+NOTHING)
+}
 
 func nextCommandss(cs *Cabins) []string {
 	cmds := make([]string, 2)

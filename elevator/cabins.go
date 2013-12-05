@@ -51,8 +51,13 @@ func (c *Cabins) Call(atFloor int, to string) {
 	cabMap := make(map[int][]int)
 	for i := 0; i < c.CabCount; i++ {
 		weight := floorDiff(c.Cabs[i].CurrentFloor, atFloor)
+
 		// add the cabin content
 		weight += c.Cabs[i].Crew
+		// add the cabin commands
+		weight += len(c.Cabs[i].Gos)
+		weight += len(c.Cabs[i].Calls)
+
 		inds := cabMap[weight]
 		inds = append(inds, i)
 		sort.Ints(inds)
